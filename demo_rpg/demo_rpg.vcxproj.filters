@@ -20,25 +20,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cleric.h">
+    <ClInclude Include="point_pool.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="hit_point.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="level_system.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rogue.h">
+    <ClInclude Include="player_character.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="stat.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="warrior.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="wizard.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

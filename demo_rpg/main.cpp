@@ -1,60 +1,19 @@
 #include <iostream>
-#include "warrior.h"
-#include "wizard.h"
-#include "cleric.h"
-#include "rogue.h"
+#include "player_character.h"
 
 int main()
 {
-	Cleric cleric_1;
+	PlayerCharacter player_1{ new Wizard{} };
 
-	for (size_t i = 0; i < 5; ++i)
+
+	for (size_t i = 0; i < 2; ++i)
 	{
-		std::cout << "Cleric Level " << cleric_1.get_current_level() << "\n"
-			<< "-Experience: " << cleric_1.get_current_experience() << "/" << cleric_1.get_experience_till_next_level() << "\n"
-			<< "-Max Hit Point: " << cleric_1.get_max_hit_point() << "\n"
-			<< "-Strength: " << cleric_1.get_strength() << "\n"
-			<< "-Intellect: " << cleric_1.get_intellect() << "\n";
+		std::cout << player_1.player_character()->get_class_name() << " Level " << player_1.player_character()->get_current_level() << '\n'
+			<< "-Experience: " << player_1.player_character()->get_current_experience() << '/' << player_1.player_character()->get_experience_till_next_level() << '\n'
+			<< "-Hit Point: " << player_1.player_character()->hit_point->get_current_point() << '/' << player_1.player_character()->hit_point->get_max_point() << '\n'
+			<< "-Strength: " << player_1.player_character()->get_strength() << '\n'
+			<< "-Intellect: " << player_1.player_character()->get_intellect() << '\n';
 
-		cleric_1.gain_experience(100u);
-	}
-
-	Warrior warrior_1;
-
-	for (size_t i = 0; i < 5; ++i)
-	{
-		std::cout << "Warrior Level " << warrior_1.get_current_level() << "\n"
-			<< "-Experience: " << warrior_1.get_current_experience() << "/" << warrior_1.get_experience_till_next_level() << "\n"
-			<< "-Max Hit Point: " << warrior_1.get_max_hit_point() << "\n"
-			<< "-Strength: " << warrior_1.get_strength() << "\n"
-			<< "-Intellect: " << warrior_1.get_intellect() << "\n";
-
-		warrior_1.gain_experience(100u);
-	}
-
-	Wizard wizard_1;
-
-	for (size_t i = 0; i < 5; ++i)
-	{
-		std::cout << "Wizard Level " << wizard_1.get_current_level() << "\n"
-			<< "-Experience: " << wizard_1.get_current_experience() << "/" << wizard_1.get_experience_till_next_level() << "\n"
-			<< "-Max Hit Point: " << wizard_1.get_max_hit_point() << "\n"
-			<< "-Strength: " << wizard_1.get_strength() << "\n"
-			<< "-Intellect: " << wizard_1.get_intellect() << "\n";
-
-		wizard_1.gain_experience(100u);
-	}
-
-	Rogue rogue_1;
-
-	for (size_t i = 0; i < 5; ++i)
-	{
-		std::cout << "Rogue Level " << rogue_1.get_current_level() << "\n"
-			<< "-Experience: " << rogue_1.get_current_experience() << "/" << rogue_1.get_experience_till_next_level() << "\n"
-			<< "-Max Hit Point: " << rogue_1.get_max_hit_point() << "\n"
-			<< "-Strength: " << rogue_1.get_strength() << "\n"
-			<< "-Intellect: " << rogue_1.get_intellect() << "\n";
-
-		rogue_1.gain_experience(100u);
+		player_1.player_character()->gain_experience(100u);
 	}
 }
