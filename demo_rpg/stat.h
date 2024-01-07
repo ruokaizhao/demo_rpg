@@ -5,8 +5,7 @@ typedef std::uint16_t stat_type;
 
 class Stat {
 public:
-	Stat() : m_strength{ static_cast<stat_type>(1u) }, m_intellect{ static_cast<stat_type>(1u) } {};
-	explicit Stat(stat_type strength_value, stat_type intellect_value) : m_strength{ strength_value }, m_intellect{ intellect_value } {};
+	explicit Stat(stat_type strength_value = 1u, stat_type intellect_value = 1u, stat_type agility_value = 1u, stat_type armor_value = 0u, stat_type magic_resistance_value = 0u) : m_strength{ strength_value }, m_intellect{ intellect_value }, m_agility{ agility_value }, m_armor{ armor_value }, m_magic_resistance{ magic_resistance_value } {};
 
 	stat_type get_strength() const
 	{
@@ -18,14 +17,35 @@ public:
 		return m_intellect;
 	}
 
+	stat_type get_agility() const
+	{
+		return m_agility;
+	}
+
+	stat_type get_armor() const
+	{
+		return m_armor;
+	}
+
+	stat_type get_magic_resistance() const
+	{
+		return m_magic_resistance;
+	}
+
 protected:
-	void increase_stats(stat_type strength_value, stat_type intellect_value)
+	void increase_stats(stat_type strength_value = 0u, stat_type intellect_value = 0u, stat_type agility_value = 0u, stat_type armor_value = 0u, stat_type magic_resistance_value = 0u)
 	{
 		m_strength += strength_value;
 		m_intellect += intellect_value;
+		m_agility += agility_value;
+		m_armor += armor_value;
+		m_magic_resistance += magic_resistance_value;
 	}
 
 private:
 	stat_type m_strength;
 	stat_type m_intellect;
+	stat_type m_agility;
+	stat_type m_armor;
+	stat_type m_magic_resistance;
 };

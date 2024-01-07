@@ -2,7 +2,6 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-
 #include "point_pool.h"
 #include "stat.h"
 
@@ -10,7 +9,7 @@
 	{                                                                     \
 		hit_point->set_max_point(BASE_POINT);                             \
 		hit_point->increase_current_point(BASE_POINT);                    \
-		increase_stats(BASE_STRENGTH, BASE_INTELLECT);                    \
+		increase_stats(BASE_STRENGTH, BASE_INTELLECT, BASE_AGILITY);      \
 	}
 #define LEVEL_UP                                                              \
 	void level_up() override                                                  \
@@ -21,11 +20,12 @@
 		hit_point->increase_current_point(                                    \
 			static_cast<point_pool_type>((BASE_POINT + 1u) / 2.0f));          \
 		increase_stats(static_cast<stat_type>((BASE_STRENGTH + 1u) / 2.0f),   \
-					   static_cast<stat_type>((BASE_INTELLECT + 1u) / 2.0f)); \
+					   static_cast<stat_type>((BASE_INTELLECT + 1u) / 2.0f),  \
+                       static_cast<stat_type>((BASE_AGILITY + 1u) / 2.0f));   \
 	}
 
 #define PLAYER_CLASS_DEFINITION(class_name, base_point, base_strength, \
-								base_intellect)                        \
+								base_intellect, base_agility)          \
 	class class_name : public PlayerCharacterDelegate                  \
 	{                                                                  \
 	public:                                                            \
@@ -35,10 +35,12 @@
 			static_cast<stat_type>(base_strength);                     \
 		static constexpr stat_type BASE_INTELLECT =                    \
 			static_cast<stat_type>(base_intellect);                    \
+		static constexpr stat_type BASE_AGILITY =                      \
+			static_cast<stat_type>(base_agility);                      \
                                                                        \
 		class_name() PLAYER_CHARACTER_DELEGATE_CONSTRUCTOR             \
                                                                        \
-			std::string get_class_name() const override                \
+		std::string get_class_name() const override					   \
 		{                                                              \
 			return std::string{#class_name};                           \
 		}                                                              \
@@ -58,7 +60,7 @@ class PlayerCharacterDelegate : public Stat
 public:
 	std::unique_ptr<PointPool> hit_point;
 
-	PlayerCharacterDelegate() : Stat{0u, 0u}
+	PlayerCharacterDelegate() : Stat{ 0u, 0u, 0u }
 	{
 		m_current_level = 1u;
 		m_current_experience = 0u;
@@ -116,21 +118,21 @@ class PlayerCharacter
 {
 public:
 	PlayerCharacter() = delete;
-	PlayerCharacter(PlayerCharacterDelegate *player_character_delegate)
-		: player_character_delegate{player_character_delegate} {}
+	PlayerCharacter(PlayerCharacterDelegate* player_character_delegate)
+		: player_character_delegate{ player_character_delegate } {}
 
 	~PlayerCharacter() { delete player_character_delegate; }
 
-	PlayerCharacterDelegate *player_character() const
+	PlayerCharacterDelegate* player_character() const
 	{
 		return player_character_delegate;
 	}
 
 private:
-	PlayerCharacterDelegate *player_character_delegate;
+	PlayerCharacterDelegate* player_character_delegate;
 };
 
-PLAYER_CLASS_DEFINITION(Cleric, 14u, 3u, 5u);
-PLAYER_CLASS_DEFINITION(Rogue, 14u, 4u, 4u);
-PLAYER_CLASS_DEFINITION(Warrior, 20u, 5u, 2u);
-PLAYER_CLASS_DEFINITION(Wizard, 10u, 1u, 8u);
+PLAYER_CLASS_DEFINITION(Cleric, 14, 3, 5, 1);
+PLAYER_CLASS_DEFINITION(Rogue, 12u, 3u, 3u, 5u);
+PLAYER_CLASS_DEFINITION(Warrior, 18, 5, 2, 2);
+PLAYER_CLASS_DEFINITION(Wizard, 10, 1, 8, 1);
