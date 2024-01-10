@@ -6,7 +6,7 @@ typedef std::uint16_t point_pool_type;
 class PointPool
 {
 public:
-	PointPool() : m_current_point{ 0 }, m_max_point{ 0 } {};
+	PointPool() : m_current_point{ 0u }, m_max_point{ 0u } {};
 
 	PointPool(
 		point_pool_type current_point_value,

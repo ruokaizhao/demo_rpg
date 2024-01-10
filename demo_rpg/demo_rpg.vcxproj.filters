@@ -29,5 +29,8 @@
     <ClInclude Include="stat.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="ability.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
