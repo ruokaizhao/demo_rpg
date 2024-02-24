@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
-
-typedef uint16_t ability_type;
+#include "types.h"
 
 enum class ABILITY_TARGET
 {
@@ -17,6 +16,13 @@ enum class ABILITY_SCALAR
 
 struct Ability
 {
+	std::string m_name;
+	ability_type m_cost;
+	ability_type m_cooldown;
+	ability_type m_hit_point_effect;
+	ABILITY_TARGET m_target;
+	ABILITY_SCALAR m_scalar;
+
 	Ability(std::string name_value = "unnamed",
 		ability_type cost_value = 0u,
 		ability_type cooldown_value = 1u,
@@ -29,11 +35,4 @@ struct Ability
 		m_hit_point_effect{ hit_point_effect_value },
 		m_target{ target_value },
 		m_scalar{ scalar_value } {}
-
-	std::string m_name;
-	ability_type m_cost;
-	ability_type m_cooldown;
-	ability_type m_hit_point_effect;
-	ABILITY_TARGET m_target;
-	ABILITY_SCALAR m_scalar;
 };

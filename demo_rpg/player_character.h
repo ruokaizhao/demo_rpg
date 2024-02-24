@@ -1,35 +1,28 @@
 #pragma once
-#include <cstdint>
 #include <string>
 #include "point_pool.h"
 #include "stat.h"
 #include <vector>
 #include "ability.h"
 #include <memory>
+#include "types.h"
 
-#define PLAYER_CHARACTER_DELEGATE_CONSTRUCTOR																									\
-		get_hit_point()->set_max_point(BASE_HIT_POINT);																							\
-		get_hit_point()->increase_current_point(BASE_HIT_POINT);																				\
-		if (get_mana_point() != nullptr)																										\
-		{																																		\
-			get_mana_point()->set_max_point(BASE_MANA_POINT);																					\
-			get_mana_point()->increase_current_point(BASE_MANA_POINT);																			\
-		}																																		\
-		increase_stats(BASE_STRENGTH, BASE_INTELLIGENCE, BASE_AGILITY)
-#define LEVEL_UP																																\
-		get_hit_point()->set_max_point(get_hit_point()->get_max_point() + static_cast<point_pool_type>((BASE_HIT_POINT + 1u) / 2.0f));			\
-		get_hit_point()->increase_current_point(static_cast<point_pool_type>((BASE_HIT_POINT + 1u) / 2.0f));									\
-		if (get_mana_point() != nullptr)																										\
-		{																																		\
-			get_mana_point()->set_max_point(get_mana_point()->get_max_point() + static_cast<point_pool_type>((BASE_MANA_POINT + 1u) / 2.0f));	\
-			get_mana_point()->increase_current_point(static_cast<point_pool_type>((BASE_MANA_POINT + 1u) / 2.0f));								\
-		}																																		\
-		increase_stats(static_cast<stat_type>((BASE_STRENGTH + 1u) / 2.0f),																		\
-					   static_cast<stat_type>((BASE_INTELLIGENCE + 1u) / 2.0f),																	\
-                       static_cast<stat_type>((BASE_AGILITY + 1u) / 2.0f))   
+#define PLAYER_CHARACTER_DELEGATE_CONSTRUCTOR                \
+	get_hit_point()->set_max_point(BASE_HIT_POINT);          \
+	get_hit_point()->increase_current_point(BASE_HIT_POINT); \
+	increase_stats(BASE_STRENGTH, BASE_INTELLIGENCE, BASE_AGILITY)
+#define LEVEL_UP                                                                                                                          \
+	get_hit_point()->set_max_point(get_hit_point()->get_max_point() + static_cast<point_pool_type>((BASE_HIT_POINT + 1u) / 2.0f));        \
+	get_hit_point()->increase_current_point(static_cast<point_pool_type>((BASE_HIT_POINT + 1u) / 2.0f));                                  \
+	if (get_mana_point() != nullptr)                                                                                                      \
+	{                                                                                                                                     \
+		get_mana_point()->set_max_point(get_mana_point()->get_max_point() + static_cast<point_pool_type>((BASE_MANA_POINT + 1u) / 2.0f)); \
+		get_mana_point()->increase_current_point(static_cast<point_pool_type>((BASE_MANA_POINT + 1u) / 2.0f));                            \
+	}                                                                                                                                     \
+	increase_stats(static_cast<stat_type>((BASE_STRENGTH + 1u) / 2.0f),                                                                   \
+				   static_cast<stat_type>((BASE_INTELLIGENCE + 1u) / 2.0f),                                                               \
+				   static_cast<stat_type>((BASE_AGILITY + 1u) / 2.0f))
 
-typedef std::uint16_t level_type;
-typedef std::uint64_t experience_type;
 
 class PlayerCharacterDelegate : public Stat
 {
@@ -74,7 +67,14 @@ public:
 	{
 		m_current_experience += experience_value;
 
-		while (check_if_leveled()) {}
+		while (check_if_leveled())
+		{
+		}
+	}
+
+	void add_buff(const Buff& buff)
+	{
+		apply_buff(buff);
 	}
 
 	virtual ~PlayerCharacterDelegate() = default;
@@ -107,14 +107,99 @@ class PlayerCharacter
 {
 public:
 	PlayerCharacter() = delete;
-	PlayerCharacter(PlayerCharacterDelegate* player_character_delegate)
-		: player_character_delegate{ player_character_delegate } {}
+	PlayerCharacter(PlayerCharacterDelegate* player_character_delegate_ptr)
+		: player_character_delegate{ player_character_delegate_ptr } {}
 
 	~PlayerCharacter() { delete player_character_delegate; }
 
-	PlayerCharacterDelegate* player_character() const
+	std::string get_class_name() const
 	{
-		return player_character_delegate;
+		return player_character_delegate->get_class_name();
+	}
+
+	level_type get_current_level() const
+	{
+		return player_character_delegate->get_current_level();
+	}
+
+	experience_type get_current_experience() const
+	{
+		return player_character_delegate->get_current_experience();
+	}
+
+	experience_type get_experience_till_next_level() const
+	{
+		return player_character_delegate->get_experience_till_next_level();
+	}
+
+	point_pool_type get_current_hit_point() const
+	{
+		return player_character_delegate->get_hit_point()->get_current_point();
+	}
+
+	point_pool_type get_max_hit_point() const
+	{
+		return player_character_delegate->get_hit_point()->get_max_point();
+	}
+
+	point_pool_type get_current_mana_point() const
+	{
+		if (player_character_delegate->get_mana_point() == nullptr)
+		{
+			return 0u;
+		}
+
+		return player_character_delegate->get_mana_point()->get_current_point();
+	}
+
+	point_pool_type get_max_mana_point() const
+	{
+		if (player_character_delegate->get_mana_point() == nullptr)
+		{
+			return 0u;
+		}
+
+		return player_character_delegate->get_mana_point()->get_max_point();
+	}
+
+	stat_type get_total_strength() const
+	{
+		return player_character_delegate->get_total_strength();
+	}
+
+	stat_type get_total_intelligence() const
+	{
+		return player_character_delegate->get_total_intelligence();
+	}
+
+	stat_type get_total_agility() const
+	{
+		return player_character_delegate->get_total_agility();
+	}
+
+	stat_type get_total_armor() const
+	{
+		return player_character_delegate->get_total_armor();
+	}
+
+	stat_type get_total_magic_resistance() const
+	{
+		return player_character_delegate->get_total_magic_resistance();
+	}
+
+	const std::vector<Ability>& get_abilities() const
+	{
+		return player_character_delegate->get_abilities();
+	}
+
+	void gain_experience(experience_type experience_value) const
+	{
+		player_character_delegate->gain_experience(experience_value);
+	}
+
+	void add_buff(const Buff& buff)
+	{
+		player_character_delegate->add_buff(buff);
 	}
 
 private:
@@ -137,7 +222,6 @@ public:
 		PLAYER_CHARACTER_DELEGATE_CONSTRUCTOR;
 
 		get_abilities().emplace_back("Heal", 2u, 1u, 2u, ABILITY_TARGET::ALLY, ABILITY_SCALAR::INTELLIGENCE);
-
 	}
 
 	std::string get_class_name() const override
