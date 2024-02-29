@@ -1,17 +1,14 @@
 #pragma once
 #include <string>
 #include "types.h"
+#include "core_stat.h"
 
 struct Buff
 {
 	std::string m_name;
 	bool m_is_debuff;
 	buff_duration_type m_duration;
-	buff_type m_strength;
-	buff_type m_intelligence;
-	buff_type m_agility;
-	buff_type m_armor;
-	buff_type m_magic_resistance;
+	CoreStat m_stat;
 
 	Buff(std::string name_value = "unnamed",
 		bool is_debuff_value = false,
@@ -23,10 +20,23 @@ struct Buff
 		buff_type magic_resistance_value = 0u)
 		: m_name{ name_value },
 		m_is_debuff{ is_debuff_value },
-		m_duration{ duration_value },
-		m_strength{ strength_value },
-		m_intelligence{ intelligence_value },
-		m_agility{ agility_value },
-		m_armor{ armor_value },
-		m_magic_resistance{ magic_resistance_value } {}
+		m_duration{ duration_value }
+	{
+		m_stat.m_strength = strength_value;
+		m_stat.m_intelligence = intelligence_value;
+		m_stat.m_agility = agility_value;
+		m_stat.m_armor = armor_value;
+		m_stat.m_magic_resistance = magic_resistance_value;
+	}
+
+	Buff(std::string name_value = "unnamed",
+		bool is_debuff_value = false,
+		buff_duration_type duration_value = 2u,
+		CoreStat core_stat_value = CoreStat{})
+		: m_name{ name_value },
+		m_is_debuff{ is_debuff_value },
+		m_duration{ duration_value }
+	{
+		m_stat = core_stat_value;
+	}
 };

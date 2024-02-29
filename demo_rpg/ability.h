@@ -2,18 +2,6 @@
 #include <string>
 #include "types.h"
 
-enum class ABILITY_TARGET
-{
-	SELF,
-	ALLY,
-	ENEMY
-};
-
-enum class ABILITY_SCALAR
-{
-	NONE, STRENGTH, INTELLIGENCE, AGILITY
-};
-
 struct Ability
 {
 	std::string m_name;

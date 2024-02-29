@@ -10,7 +10,7 @@
 #define PLAYER_CHARACTER_DELEGATE_CONSTRUCTOR                \
 	get_hit_point()->set_max_point(BASE_HIT_POINT);          \
 	get_hit_point()->increase_current_point(BASE_HIT_POINT); \
-	increase_stats(BASE_STRENGTH, BASE_INTELLIGENCE, BASE_AGILITY)
+	increase_stat(BASE_STRENGTH, BASE_INTELLIGENCE, BASE_AGILITY)
 #define LEVEL_UP                                                                                                                          \
 	get_hit_point()->set_max_point(get_hit_point()->get_max_point() + static_cast<point_pool_type>((BASE_HIT_POINT + 1u) / 2.0f));        \
 	get_hit_point()->increase_current_point(static_cast<point_pool_type>((BASE_HIT_POINT + 1u) / 2.0f));                                  \
@@ -19,7 +19,7 @@
 		get_mana_point()->set_max_point(get_mana_point()->get_max_point() + static_cast<point_pool_type>((BASE_MANA_POINT + 1u) / 2.0f)); \
 		get_mana_point()->increase_current_point(static_cast<point_pool_type>((BASE_MANA_POINT + 1u) / 2.0f));                            \
 	}                                                                                                                                     \
-	increase_stats(static_cast<stat_type>((BASE_STRENGTH + 1u) / 2.0f),                                                                   \
+	increase_stat(static_cast<stat_type>((BASE_STRENGTH + 1u) / 2.0f),                                                                    \
 				   static_cast<stat_type>((BASE_INTELLIGENCE + 1u) / 2.0f),                                                               \
 				   static_cast<stat_type>((BASE_AGILITY + 1u) / 2.0f))
 
@@ -30,8 +30,13 @@ class PlayerCharacterDelegate : public Stat
 	static constexpr experience_type EXPERIENCE_TILL_LEVEL_TWO = 100u;
 
 public:
-	PlayerCharacterDelegate() : Stat{ 0u, 0u, 0u }, m_current_level{ 1u },
-		m_current_experience{ 0u }, m_experience_till_next_level{ EXPERIENCE_TILL_LEVEL_TWO }, hit_point{ std::make_unique<PointPool>() }, m_abilities{} {}
+	PlayerCharacterDelegate()
+		: Stat{ 0u, 0u, 0u },
+		m_current_level{ 1u },
+		m_current_experience{ 0u },
+		m_experience_till_next_level{ EXPERIENCE_TILL_LEVEL_TWO },
+		hit_point{ std::make_unique<PointPool>() },
+		m_abilities{} {}
 
 	level_type get_current_level() const
 	{
@@ -329,10 +334,6 @@ private:
 		if (get_current_level() == 2)
 		{
 			get_abilities().emplace_back("Icebolt", 3u, 1u, 6u, ABILITY_TARGET::ENEMY, ABILITY_SCALAR::INTELLIGENCE);
-
-			get_mana_point()->set_max_point(get_mana_point()->get_max_point() + static_cast<point_pool_type>(1u));
-			get_mana_point()->increase_current_point(static_cast<point_pool_type>(1u));
-			increase_stats(0u, 1u);
 		}
 	}
 };

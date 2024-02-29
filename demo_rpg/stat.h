@@ -2,60 +2,72 @@
 #include "buff.h"
 #include <vector>
 #include "types.h"
+#include "core_stat.h"
 
 class Stat
 {
 public:
-	explicit Stat(stat_type strength_value = 1u, stat_type intelligence_value = 1u, stat_type agility_value = 1u, stat_type armor_value = 0u, stat_type magic_resistance_value = 0u) : m_base_strength{ strength_value }, m_base_intelligence{ intelligence_value }, m_base_agility{ agility_value }, m_base_armor{ armor_value }, m_base_magic_resistance{ magic_resistance_value } {};
+	explicit Stat(stat_type strength_value = 1u,
+		stat_type intelligence_value = 1u,
+		stat_type agility_value = 1u,
+		stat_type armor_value = 0u,
+		stat_type magic_resistance_value = 0u)
+	{
+		m_base.m_strength = strength_value;
+		m_base.m_intelligence = intelligence_value;
+		m_base.m_agility = agility_value;
+		m_base.m_armor = armor_value;
+		m_base.m_magic_resistance = magic_resistance_value;
+	};
 
 	stat_type get_base_strength() const
 	{
-		return m_base_strength;
+		return m_base.m_strength;
 	}
 
 	stat_type get_base_intelligence() const
 	{
-		return m_base_intelligence;
+		return m_base.m_intelligence;
 	}
 
 	stat_type get_base_agility() const
 	{
-		return m_base_agility;
+		return m_base.m_agility;
 	}
 
 	stat_type get_base_armor() const
 	{
-		return m_base_armor;
+		return m_base.m_armor;
 	}
 
 	stat_type get_base_magic_resistance() const
 	{
-		return m_base_magic_resistance;
+		return m_base.m_magic_resistance;
 	}
 
 	stat_type get_total_strength() const
 	{
-		return m_base_strength + m_strength_from_buff < 0 ? 0 : m_base_strength + m_strength_from_buff;
+		return m_base.m_strength + m_stat_from_buffs.m_strength < 0 ? 0 : m_base.m_strength + m_stat_from_buffs.m_strength;
 	}
 
 	stat_type get_total_intelligence() const
 	{
-		return m_base_intelligence + m_intelligence_from_buff < 0 ? 0 : m_base_intelligence + m_intelligence_from_buff;
+		return m_base.m_intelligence + m_stat_from_buffs.m_intelligence < 0 ? 0 : m_base.m_intelligence + m_stat_from_buffs.m_intelligence;
 	}
 
 	stat_type get_total_agility() const
 	{
-		return m_base_agility + m_agility_from_buff < 0 ? 0 : m_base_agility + m_agility_from_buff;
+		return m_base.m_agility + m_stat_from_buffs.m_agility < 0 ? 0 : m_base.m_agility + m_stat_from_buffs.m_agility;
 	}
 
 	stat_type get_total_armor() const
 	{
-		return m_base_armor + m_armor_from_buff < 0 ? 0 : m_base_armor + m_armor_from_buff;
+		return m_base.m_armor + m_stat_from_buffs.m_armor < 0 ? 0 : m_base.m_armor + m_stat_from_buffs.m_armor;
 	}
 
 	stat_type get_total_magic_resistance() const
 	{
-		return m_base_magic_resistance + m_magic_resistance_from_buff < 0 ? 0 : m_base_magic_resistance + m_magic_resistance_from_buff;
+		return m_base.m_magic_resistance + m_stat_from_buffs.m_magic_resistance < 0 ? 0 : m_base.m_magic_resistance + m_stat_from_buffs.m_magic_resistance;
 	}
 
 protected:
@@ -76,60 +88,41 @@ protected:
 		re_calculate_buffs();
 	}
 
-	void increase_stats(stat_type strength_value = 0u, stat_type intelligence_value = 0u, stat_type agility_value = 0u, stat_type armor_value = 0u, stat_type magic_resistance_value = 0u)
+	void increase_stat(stat_type strength_value = 0u, stat_type intelligence_value = 0u, stat_type agility_value = 0u, stat_type armor_value = 0u, stat_type magic_resistance_value = 0u)
 	{
-		m_base_strength += strength_value;
-		m_base_intelligence += intelligence_value;
-		m_base_agility += agility_value;
-		m_base_armor += armor_value;
-		m_base_magic_resistance += magic_resistance_value;
+		m_base.m_strength += strength_value;
+		m_base.m_intelligence += intelligence_value;
+		m_base.m_agility += agility_value;
+		m_base.m_armor += armor_value;
+		m_base.m_magic_resistance += magic_resistance_value;
+	}
+
+	void increase_stat(CoreStat stats_value)
+	{
+		m_base += stats_value;
 	}
 
 private:
-	stat_type m_base_strength;
-	stat_type m_base_intelligence;
-	stat_type m_base_agility;
-	stat_type m_base_armor;
-	stat_type m_base_magic_resistance;
-	stat_type m_strength_from_buff = 0u;
-	stat_type m_intelligence_from_buff = 0u;
-	stat_type m_agility_from_buff = 0u;
-	stat_type m_armor_from_buff = 0u;
-	stat_type m_magic_resistance_from_buff = 0u;
-	std::vector<Buff> m_buffs;
+	CoreStat m_base{};
+	CoreStat m_stat_from_buffs{};
+	std::vector<Buff> m_buffs{};
 
 	void re_calculate_buffs()
 	{
-		stat_type temporary_strength_from_buff = 0u;
-		stat_type temporary_intelligence_from_buff = 0u;
-		stat_type temporary_agility_from_buff = 0u;
-		stat_type temporary_armor_from_buff = 0u;
-		stat_type temporary_magic_resistance_from_buff = 0u;
+		CoreStat temporary_stat_from_buffs{ 0, 0, 0, 0, 0 };
 
 		for (const auto& buff : m_buffs)
 		{
 			if (buff.m_is_debuff)
 			{
-				temporary_strength_from_buff -= buff.m_strength;
-				temporary_intelligence_from_buff -= buff.m_intelligence;
-				temporary_agility_from_buff -= buff.m_agility;
-				temporary_armor_from_buff -= buff.m_armor;
-				temporary_magic_resistance_from_buff -= buff.m_magic_resistance;
+				temporary_stat_from_buffs -= buff.m_stat;
 			}
 			else
 			{
-				temporary_strength_from_buff += buff.m_strength;
-				temporary_intelligence_from_buff += buff.m_intelligence;
-				temporary_agility_from_buff += buff.m_agility;
-				temporary_armor_from_buff += buff.m_armor;
-				temporary_magic_resistance_from_buff += buff.m_magic_resistance;
+				temporary_stat_from_buffs += buff.m_stat;
 			}
 		}
 
-		m_strength_from_buff = temporary_strength_from_buff;
-		m_intelligence_from_buff = temporary_intelligence_from_buff;
-		m_agility_from_buff = temporary_agility_from_buff;
-		m_armor_from_buff = temporary_armor_from_buff;
-		m_magic_resistance_from_buff = temporary_magic_resistance_from_buff;
+		m_stat_from_buffs = temporary_stat_from_buffs;
 	}
 };

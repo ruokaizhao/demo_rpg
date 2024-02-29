@@ -32,7 +32,7 @@ int main()
 		player_1.gain_experience(100u);
 	}
 
-	player_1.add_buff(Buff{ "Weak", false, 2u, 6u });
+	player_1.add_buff(Buff{ "Weak", true, 2u, 6u });
 
 	for (size_t i = 0; i < 2; ++i)
 	{
