@@ -5,18 +5,18 @@
 struct Ability
 {
 	std::string m_name;
-	ability_type m_cost;
-	ability_type m_cooldown;
-	ability_type m_hit_point_effect;
-	ABILITY_TARGET m_target;
-	ABILITY_SCALAR m_scalar;
+	AbilityType m_cost;
+	AbilityType m_cooldown;
+	AbilityType m_hit_point_effect;
+	AbilityTarget m_target;
+	AbilityScalar m_scalar;
 
 	Ability(std::string name_value = "unnamed",
-		ability_type cost_value = 0u,
-		ability_type cooldown_value = 1u,
-		ability_type hit_point_effect_value = 1u,
-		ABILITY_TARGET target_value = ABILITY_TARGET::SELF,
-		ABILITY_SCALAR scalar_value = ABILITY_SCALAR::NONE)
+		AbilityType cost_value = 0u,
+		AbilityType cooldown_value = 1u,
+		AbilityType hit_point_effect_value = 1u,
+		AbilityTarget target_value = AbilityTarget::SELF,
+		AbilityScalar scalar_value = AbilityScalar::none)
 		: m_name{ name_value },
 		m_cost{ cost_value },
 		m_cooldown{ cooldown_value },

@@ -7,65 +7,65 @@
 class Stat
 {
 public:
-	explicit Stat(stat_type strength_value = 1u,
-		stat_type intelligence_value = 1u,
-		stat_type agility_value = 1u,
-		stat_type armor_value = 0u,
-		stat_type magic_resistance_value = 0u)
+	explicit Stat(StatType strength_value = 1u,
+		StatType intelligence_value = 1u,
+		StatType agility_value = 1u,
+		StatType armor_value = 0u,
+		StatType magic_resistance_value = 0u)
 	{
 		m_base.m_strength = strength_value;
 		m_base.m_intelligence = intelligence_value;
 		m_base.m_agility = agility_value;
-		m_base.m_armor = armor_value;
+		m_base.m_physical_defense = armor_value;
 		m_base.m_magic_resistance = magic_resistance_value;
 	};
 
-	stat_type get_base_strength() const
+	StatType get_base_strength() const
 	{
 		return m_base.m_strength;
 	}
 
-	stat_type get_base_intelligence() const
+	StatType get_base_intelligence() const
 	{
 		return m_base.m_intelligence;
 	}
 
-	stat_type get_base_agility() const
+	StatType get_base_agility() const
 	{
 		return m_base.m_agility;
 	}
 
-	stat_type get_base_armor() const
+	StatType get_base_physical_defense() const
 	{
-		return m_base.m_armor;
+		return m_base.m_physical_defense;
 	}
 
-	stat_type get_base_magic_resistance() const
+	StatType get_base_magic_resistance() const
 	{
 		return m_base.m_magic_resistance;
 	}
 
-	stat_type get_total_strength() const
+	StatType get_total_strength() const
 	{
 		return m_base.m_strength + m_stat_from_buffs.m_strength;
 	}
 
-	stat_type get_total_intelligence() const
+	StatType get_total_intelligence() const
 	{
 		return m_base.m_intelligence + m_stat_from_buffs.m_intelligence;
 	}
 
-	stat_type get_total_agility() const
+	StatType get_total_agility() const
 	{
 		return m_base.m_agility + m_stat_from_buffs.m_agility;
 	}
 
-	stat_type get_total_armor() const
+	StatType get_total_physical_defense() const
 	{
-		return m_base.m_armor + m_stat_from_buffs.m_armor;
+		return m_base.m_physical_defense + m_stat_from_buffs.m_physical_defense;
 	}
 
-	stat_type get_total_magic_resistance() const
+	StatType get_total_magic_resistance() const
 	{
 		return m_base.m_magic_resistance + m_stat_from_buffs.m_magic_resistance;
 	}
@@ -88,12 +88,12 @@ protected:
 		re_calculate_buffs();
 	}
 
-	void increase_stat(stat_type strength_value = 0u, stat_type intelligence_value = 0u, stat_type agility_value = 0u, stat_type armor_value = 0u, stat_type magic_resistance_value = 0u)
+	void increase_stat(StatType strength_value = 0u, StatType intelligence_value = 0u, StatType agility_value = 0u, StatType armor_value = 0u, StatType magic_resistance_value = 0u)
 	{
 		m_base.m_strength += strength_value;
 		m_base.m_intelligence += intelligence_value;
 		m_base.m_agility += agility_value;
-		m_base.m_armor += armor_value;
+		m_base.m_physical_defense += armor_value;
 		m_base.m_magic_resistance += magic_resistance_value;
 	}
 

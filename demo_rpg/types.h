@@ -1,38 +1,38 @@
 #pragma once
 #include <cstdint>
 
-typedef std::uint16_t ability_type;
+typedef std::uint16_t AbilityType;
 
-typedef std::uint16_t buff_duration_type;
+typedef std::uint16_t BuffDurationType;
 
-typedef std::uint16_t buff_type;
+typedef std::uint16_t BuffType;
 
-typedef std::uint16_t level_type;
+typedef std::uint16_t LevelType;
 
-typedef std::uint64_t experience_type;
+typedef std::uint64_t ExperienceType;
 
-typedef std::uint16_t point_pool_type;
+typedef std::uint16_t PointPoolType;
 
-typedef std::int16_t stat_type;
+typedef std::int16_t StatType;
 
-typedef std::uint64_t damage_type;
+typedef std::uint64_t DamageType;
 
-enum class ABILITY_TARGET
+enum class AbilityTarget
 {
 	SELF, ALLY, ENEMY
 };
 
-enum class ABILITY_SCALAR
+enum class AbilityScalar
 {
-	NONE, STRENGTH, INTELLIGENCE, AGILITY
+	none, strength, intelligence, agility
 };
 
-enum class ARMOR_SLOT
+enum class ArmorSlot
 {
-	HEAD, CHEST, LEGS, BOOTS, GLOVES, RING1, RING2, NECK, NUMBER_OF_SLOTS
+	head, chest, legs, boots, gloves, ring1, ring2, neck, number_of_slots
 };
 
-enum class WEAPON_SLOT
+enum class WeaponSlot
 {
-	MELEE, RANGED, NUMBER_OF_SLOTS
+	melee, ranged, number_of_slots
 };

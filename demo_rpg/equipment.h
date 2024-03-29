@@ -35,10 +35,10 @@ private:
 	CoreStat m_stat;
 };
 
-class Armor final : public Equipment<ARMOR_SLOT>
+class Armor final : public Equipment<ArmorSlot>
 {
 public:
-	Armor(std::string name_value, ARMOR_SLOT slot_value, CoreStat stat_value ) : Equipment{ name_value,slot_value, stat_value } {}
+	Armor(std::string name_value, ArmorSlot slot_value, CoreStat stat_value ) : Equipment{ name_value,slot_value, stat_value } {}
 
 	std::string get_type() const override
 	{
@@ -50,14 +50,14 @@ public:
 	Armor(Armor &&) = delete;
 };
 
-class Weapon final : public Equipment<WEAPON_SLOT>
+class Weapon final : public Equipment<WeaponSlot>
 {
 public:
 	bool m_is_two_handed;
-	damage_type m_min_damage;
-	damage_type m_max_damage;
+	DamageType m_min_damage;
+	DamageType m_max_damage;
 
-	Weapon(std::string name_value, WEAPON_SLOT slot_value, CoreStat stat_value, bool is_two_handed_value, damage_type min_damage_value, damage_type max_damage_value) : Equipment{ name_value,slot_value, stat_value }, m_is_two_handed{ is_two_handed_value }, m_min_damage{ min_damage_value }, m_max_damage{ max_damage_value } {}
+	Weapon(std::string name_value, WeaponSlot slot_value, CoreStat stat_value, bool is_two_handed_value, DamageType min_damage_value, DamageType max_damage_value) : Equipment{ name_value,slot_value, stat_value }, m_is_two_handed{ is_two_handed_value }, m_min_damage{ min_damage_value }, m_max_damage{ max_damage_value } {}
 
 	std::string get_type() const override
 	{

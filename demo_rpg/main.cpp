@@ -1,15 +1,14 @@
 #include <iostream>
-#include "player_character.h"
+#include "role.h"
 #include "equipment.h"
-#include "algorithm"
 
 int main()
 {
-	PlayerCharacter player_1{ new Cleric{} };
+	Role player_1{ new Cleric{} };
 
-	std::unique_ptr<Equipment<ARMOR_SLOT>> helmet = std::make_unique<Armor>("Strong Helmet", ARMOR_SLOT::HEAD, CoreStat{ 0u, 0u, 0u, 5u, 5u });
-	std::unique_ptr<Equipment<ARMOR_SLOT>> chest = std::make_unique<Armor>("Strong Chest", ARMOR_SLOT::CHEST, CoreStat{ 0u, 0u, 0u, 10u, 10u });
-	std::unique_ptr<Equipment<ARMOR_SLOT>> legs = std::make_unique<Armor>("Strong legs", ARMOR_SLOT::LEGS, CoreStat{ 0u, 0u, 0u, 2u, 2u });
+	std::unique_ptr<Equipment<ArmorSlot>> helmet = std::make_unique<Armor>("Strong Helmet", ArmorSlot::head, CoreStat{ 0u, 0u, 0u, 5u, 5u });
+	std::unique_ptr<Equipment<ArmorSlot>> chest = std::make_unique<Armor>("Strong Chest", ArmorSlot::chest, CoreStat{ 0u, 0u, 0u, 10u, 10u });
+	std::unique_ptr<Equipment<ArmorSlot>> legs = std::make_unique<Armor>("Strong legs", ArmorSlot::legs, CoreStat{ 0u, 0u, 0u, 2u, 2u });
 
 	player_1.equip_equipment(helmet);
 	player_1.equip_equipment(chest);
@@ -26,7 +25,7 @@ int main()
 		std::cout << "-Strength: " << player_1.get_total_strength() << '\n'
 			<< "-Intelligence: " << player_1.get_total_intelligence() << '\n'
 			<< "-Agility: " << player_1.get_total_agility() << '\n'
-			<< "-Armor: " << player_1.get_total_armor() << '\n'
+			<< "-Armor: " << player_1.get_total_physical_defense() << '\n'
 			<< "-Magic Resistance: " << player_1.get_total_magic_resistance() << '\n';
 
 		std::cout << "-Ability: " << '\n';
@@ -50,6 +49,8 @@ int main()
 	std::cout << "Armors: " << '\n';
 	for (const auto& armor : player_1.get_armors())
 	{
-		std::cout << armor->get_name() << ":" << '\n' << "  Armor: " << armor->get_stat().m_armor << ", " << "Magic Resistance: " << static_cast<int>(armor->get_slot()) << '\n';
+		std::cout << armor->get_name() << ":" << '\n' << "  Armor: " << armor->get_stat().m_physical_defense << ", " << "Magic Resistance: " << static_cast<int>(armor->get_slot()) << '\n';
 	}
+
+	return 0;
 }

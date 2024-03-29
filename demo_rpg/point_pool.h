@@ -7,8 +7,8 @@ public:
 	PointPool() : m_current_point{ 0u }, m_max_point{ 0u } {};
 
 	PointPool(
-		point_pool_type current_point_value,
-		point_pool_type max_point_value
+		PointPoolType current_point_value,
+		PointPoolType max_point_value
 	) :
 		m_current_point{ current_point_value },
 		m_max_point{ max_point_value }
@@ -21,7 +21,7 @@ public:
 
 	~PointPool() = default;
 
-	bool set_max_point(point_pool_type max_point_value)
+	bool set_max_point(PointPoolType max_point_value)
 	{
 		if (max_point_value < 1)
 		{
@@ -38,7 +38,7 @@ public:
 		return true;
 	}
 
-	void reduce_current_point(point_pool_type value_to_reduce)
+	void reduce_current_point(PointPoolType value_to_reduce)
 	{
 		if (value_to_reduce > m_current_point)
 		{
@@ -49,7 +49,7 @@ public:
 		m_current_point -= value_to_reduce;
 	}
 
-	void increase_current_point(point_pool_type value_to_increase)
+	void increase_current_point(PointPoolType value_to_increase)
 	{
 		if (m_current_point + value_to_increase > m_max_point)
 		{
@@ -60,17 +60,17 @@ public:
 		m_current_point += value_to_increase;
 	}
 
-	point_pool_type get_max_point() const
+	PointPoolType get_max_point() const
 	{
 		return m_max_point;
 	}
 
-	point_pool_type get_current_point() const
+	PointPoolType get_current_point() const
 	{
 		return m_current_point;
 	}
 
 private:
-	point_pool_type m_current_point;
-	point_pool_type m_max_point;
+	PointPoolType m_current_point;
+	PointPoolType m_max_point;
 };
