@@ -6,6 +6,8 @@
 #include "ability.h"
 #include <memory>
 #include "types.h"
+#include "equipment.h"
+#include <array>
 
 #define PLAYER_CHARACTER_DELEGATE_CONSTRUCTOR                \
 	get_hit_point()->set_max_point(BASE_HIT_POINT);          \
@@ -72,9 +74,7 @@ public:
 	{
 		m_current_experience += experience_value;
 
-		while (check_if_leveled())
-		{
-		}
+		while (check_if_leveled()) {}
 	}
 
 	void add_buff(const Buff& buff)
@@ -111,12 +111,14 @@ private:
 class PlayerCharacter
 {
 public:
-	PlayerCharacter() = delete;
-	PlayerCharacter(PlayerCharacterDelegate* player_character_delegate_ptr)
-		: player_character_delegate{ player_character_delegate_ptr } {}
+	PlayerCharacter(PlayerCharacterDelegate* player_character_delegate_ptr) : player_character_delegate{ player_character_delegate_ptr } {}
 
-	~PlayerCharacter() { delete player_character_delegate; }
+	~PlayerCharacter()
+	{
+		delete player_character_delegate;
+	}
 
+	// Getters
 	std::string get_class_name() const
 	{
 		return player_character_delegate->get_class_name();
@@ -169,27 +171,67 @@ public:
 
 	stat_type get_total_strength() const
 	{
-		return player_character_delegate->get_total_strength();
+		stat_type total_strength_from_armors = 0u;
+		for (const auto& armor : armors)
+		{
+			if (armor != nullptr)
+			{
+				total_strength_from_armors += armor->get_stat().m_strength;
+			}
+		}
+		return player_character_delegate->get_total_strength() + total_strength_from_armors < 0 ? 0 : player_character_delegate->get_total_strength() + total_strength_from_armors;
 	}
 
 	stat_type get_total_intelligence() const
 	{
-		return player_character_delegate->get_total_intelligence();
+		stat_type total_intelligence_from_armors = 0u;
+		for (const auto& armor : armors)
+		{
+			if (armor != nullptr)
+			{
+				total_intelligence_from_armors += armor->get_stat().m_intelligence;
+			}
+		}
+		return player_character_delegate->get_total_intelligence() + total_intelligence_from_armors < 0 ? 0 : player_character_delegate->get_total_intelligence() + total_intelligence_from_armors;
 	}
 
 	stat_type get_total_agility() const
 	{
-		return player_character_delegate->get_total_agility();
+		stat_type total_agility_from_armors = 0u;
+		for (const auto& armor : armors)
+		{
+			if (armor != nullptr)
+			{
+				total_agility_from_armors += armor->get_stat().m_agility;
+			}
+		}
+		return player_character_delegate->get_total_agility() + total_agility_from_armors < 0 ? 0 : player_character_delegate->get_total_agility() + total_agility_from_armors;
 	}
 
 	stat_type get_total_armor() const
 	{
-		return player_character_delegate->get_total_armor();
+		stat_type total_armor_from_armors = 0u;
+		for (const auto& armor : armors)
+		{
+			if (armor != nullptr)
+			{
+				total_armor_from_armors += armor->get_stat().m_armor;
+			}
+		}
+		return player_character_delegate->get_total_armor() + total_armor_from_armors < 0 ? 0 : player_character_delegate->get_total_armor() + total_armor_from_armors;
 	}
 
 	stat_type get_total_magic_resistance() const
 	{
-		return player_character_delegate->get_total_magic_resistance();
+		stat_type total_magic_resistance_from_armors = 0u;
+		for (const auto& armor : armors)
+		{
+			if (armor != nullptr)
+			{
+				total_magic_resistance_from_armors += armor->get_stat().m_magic_resistance;
+			}
+		}
+		return player_character_delegate->get_total_magic_resistance() + total_magic_resistance_from_armors < 0 ? 0 : player_character_delegate->get_total_magic_resistance() + total_magic_resistance_from_armors;
 	}
 
 	const std::vector<Ability>& get_abilities() const
@@ -197,6 +239,17 @@ public:
 		return player_character_delegate->get_abilities();
 	}
 
+	const std::array<std::unique_ptr<Equipment<ARMOR_SLOT>>, static_cast<size_t>(ARMOR_SLOT::NUMBER_OF_SLOTS)>& get_armors() const
+	{
+		return armors;
+	}
+
+	const std::array<std::unique_ptr<Equipment<WEAPON_SLOT>>, static_cast<size_t>(WEAPON_SLOT::NUMBER_OF_SLOTS)>& get_weapons() const
+	{
+		return weapons;
+	}
+
+	// Modifiers
 	void gain_experience(experience_type experience_value) const
 	{
 		player_character_delegate->gain_experience(experience_value);
@@ -207,8 +260,48 @@ public:
 		player_character_delegate->add_buff(buff);
 	}
 
+	// Overloaded functions
+	bool equip_equipment(std::unique_ptr<Equipment<ARMOR_SLOT>>& equipment)
+	{
+		if (dynamic_cast<Armor*>(equipment.get()) != nullptr)
+		{
+			// This is just for comparison, the code in equip_equipment for WEAPON_SLOT is better, the reason being that the 
+			// get_slot has been moved to the parent class and we can call get_slot directly on an instance of Equipment,
+			// therefore, we no longer need to cast the equipment to Armor. 
+			std::unique_ptr<Armor> armor = static_cast<std::unique_ptr<Armor>>(dynamic_cast<Armor*>(equipment.release()));
+
+			// No need to check if the slot is equiped, when assigning a new value to smart pointer, the old value is automatically deleted.
+			armors.at(static_cast<size_t>(armor->get_slot())) = std::move(armor);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	// unique_ptr needs to be passed by reference, because it is not copyable.
+	bool equip_equipment(std::unique_ptr<Equipment<WEAPON_SLOT>>& equipment)
+	{
+		if (dynamic_cast<Weapon*>(equipment.get()) != nullptr)
+		{
+			weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(equipment);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	// Delete constructors
+	PlayerCharacter() = delete;
+	PlayerCharacter(const PlayerCharacter&) = delete;
+	PlayerCharacter(PlayerCharacter&&) = delete;
+
 private:
 	PlayerCharacterDelegate* player_character_delegate;
+	// If not initialized, smart pointers are default to nullptr.
+	std::array<std::unique_ptr<Equipment<ARMOR_SLOT>>, static_cast<size_t>(ARMOR_SLOT::NUMBER_OF_SLOTS)> armors;
+	std::array<std::unique_ptr<Equipment<WEAPON_SLOT>>, static_cast<size_t>(WEAPON_SLOT::NUMBER_OF_SLOTS)> weapons;
 };
 
 class Cleric : public PlayerCharacterDelegate

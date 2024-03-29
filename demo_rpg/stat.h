@@ -47,27 +47,27 @@ public:
 
 	stat_type get_total_strength() const
 	{
-		return m_base.m_strength + m_stat_from_buffs.m_strength < 0 ? 0 : m_base.m_strength + m_stat_from_buffs.m_strength;
+		return m_base.m_strength + m_stat_from_buffs.m_strength;
 	}
 
 	stat_type get_total_intelligence() const
 	{
-		return m_base.m_intelligence + m_stat_from_buffs.m_intelligence < 0 ? 0 : m_base.m_intelligence + m_stat_from_buffs.m_intelligence;
+		return m_base.m_intelligence + m_stat_from_buffs.m_intelligence;
 	}
 
 	stat_type get_total_agility() const
 	{
-		return m_base.m_agility + m_stat_from_buffs.m_agility < 0 ? 0 : m_base.m_agility + m_stat_from_buffs.m_agility;
+		return m_base.m_agility + m_stat_from_buffs.m_agility;
 	}
 
 	stat_type get_total_armor() const
 	{
-		return m_base.m_armor + m_stat_from_buffs.m_armor < 0 ? 0 : m_base.m_armor + m_stat_from_buffs.m_armor;
+		return m_base.m_armor + m_stat_from_buffs.m_armor;
 	}
 
 	stat_type get_total_magic_resistance() const
 	{
-		return m_base.m_magic_resistance + m_stat_from_buffs.m_magic_resistance < 0 ? 0 : m_base.m_magic_resistance + m_stat_from_buffs.m_magic_resistance;
+		return m_base.m_magic_resistance + m_stat_from_buffs.m_magic_resistance;
 	}
 
 protected:

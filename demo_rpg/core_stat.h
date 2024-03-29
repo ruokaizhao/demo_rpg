@@ -15,7 +15,7 @@ public:
 		m_armor{ armor_value },
 		m_magic_resistance{ magic_resistance_value } {}
 
-	CoreStat& operator+=(const CoreStat rhs)
+	CoreStat& operator+=(const CoreStat& rhs)
 	{
 		m_strength += rhs.m_strength;
 		m_intelligence += rhs.m_intelligence;
@@ -26,7 +26,7 @@ public:
 		return *this;
 	}
 
-	CoreStat& operator-=(const CoreStat rhs)
+	CoreStat& operator-=(const CoreStat& rhs)
 	{
 		m_strength -= rhs.m_strength;
 		m_intelligence -= rhs.m_intelligence;
