@@ -41,10 +41,13 @@
     <ClInclude Include="core_stat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="equipment.h">
+    <ClInclude Include="item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="character.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="equipment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

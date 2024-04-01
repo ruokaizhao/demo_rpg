@@ -1,6 +1,4 @@
 #pragma once
-#include <string>
-#include "types.h"
 #include "core_stat.h"
 
 struct Buff

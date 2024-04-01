@@ -17,6 +17,8 @@ typedef std::int16_t StatType;
 
 typedef std::uint64_t DamageType;
 
+typedef std::uint16_t IdType;
+
 enum class AbilityTarget
 {
 	SELF, ALLY, ENEMY

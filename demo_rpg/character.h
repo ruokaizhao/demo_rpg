@@ -1,13 +1,8 @@
 #pragma once
-#include <string>
+#include "ability.h"
+#include "item.h"
 #include "point_pool.h"
 #include "stat.h"
-#include <vector>
-#include "ability.h"
-#include <memory>
-#include "types.h"
-#include "equipment.h"
-#include <array>
 
 #define SET_UP_CHARACTER                \
 	get_hit_point()->set_max_point(BASE_HIT_POINT);          \

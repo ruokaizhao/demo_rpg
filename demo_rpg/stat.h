@@ -1,8 +1,6 @@
 #pragma once
 #include "buff.h"
 #include <vector>
-#include "types.h"
-#include "core_stat.h"
 
 class Stat
 {
