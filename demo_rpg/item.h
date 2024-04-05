@@ -1,6 +1,5 @@
 #pragma once
 #include "equipment.h"
-#include <memory>
 
 class Item
 {

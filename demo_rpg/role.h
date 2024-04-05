@@ -30,34 +30,14 @@ public:
 		return m_character_delegate_ptr->get_experience_till_next_level();
 	}
 
-	PointPoolType get_current_hit_point() const
+	std::unique_ptr<PointPool>& get_hit_point()
 	{
-		return m_character_delegate_ptr->get_hit_point()->get_current_point();
+		return m_character_delegate_ptr->get_hit_point();
 	}
 
-	PointPoolType get_max_hit_point() const
+	std::unique_ptr<PointPool>& get_mana_point()
 	{
-		return m_character_delegate_ptr->get_hit_point()->get_max_point();
-	}
-
-	PointPoolType get_current_mana_point() const
-	{
-		if (m_character_delegate_ptr->get_mana_point() == nullptr)
-		{
-			return 0u;
-		}
-
-		return m_character_delegate_ptr->get_mana_point()->get_current_point();
-	}
-
-	PointPoolType get_max_mana_point() const
-	{
-		if (m_character_delegate_ptr->get_mana_point() == nullptr)
-		{
-			return 0u;
-		}
-
-		return m_character_delegate_ptr->get_mana_point()->get_max_point();
+		return m_character_delegate_ptr->get_mana_point();
 	}
 
 	StatType get_total_strength() const
@@ -162,14 +142,12 @@ public:
 		if (dynamic_cast<Armor*>(item->get_m_item_delegate_ptr().get()) != nullptr)
 		{
 			std::unique_ptr<EquipmentDelegate<ArmorSlot>> equipment = static_cast<std::unique_ptr<EquipmentDelegate<ArmorSlot>>>(static_cast<EquipmentDelegate<ArmorSlot>*>(item->get_m_item_delegate_ptr().release()));
-			// This is just for comparison, the code in the below if block is better, the reason being that the 
+			// This is just for comparison, the code in the below if block is better, the reason being that the
 			// get_slot has been moved to the parent class and we can call get_slot directly on an instance of Equipment,
-			// therefore, we no longer need to cast the equipment to Armor. 
+			// therefore, we no longer need to cast the equipment to Armor.
 			std::unique_ptr<Armor> armor = static_cast<std::unique_ptr<Armor>>(dynamic_cast<Armor*>(equipment.release()));
 
 			m_armors.at(static_cast<size_t>(armor->get_slot())) = std::move(armor);
-
-			delete item;
 
 			return true;
 		}
@@ -180,12 +158,51 @@ public:
 			// No need to check if the slot is equiped, when assigning a new value to smart pointer, the old value is automatically deleted.
 			m_weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(equipment);
 
-			delete item;
-
 			return true;
 		}
 
-		delete item;
+		return false;
+	}
+
+	bool use_item(Item* item)
+	{
+		if (item == nullptr || item->get_m_item_delegate_ptr() == nullptr)
+		{
+			return false;
+		}
+
+		if (dynamic_cast<Potion*>(item->get_m_item_delegate_ptr().get()))
+		{
+			std::unique_ptr<Potion> potion = static_cast<std::unique_ptr<Potion>>(static_cast<Potion*>(item->get_m_item_delegate_ptr().release()));
+
+			if (potion->get_buff() != nullptr)
+			{
+				add_buff(*(potion->get_buff()));
+			}
+
+			// If the hit point is full and the potion does not have a buff, the potion will not be used.
+			if (get_hit_point()->is_full() && potion->get_buff() == nullptr)
+			{
+				return false;
+			}
+
+			if (!get_hit_point()->is_full())
+			{
+				get_hit_point()->increase_current_point(potion->get_hit_point());
+			}
+
+			// Reduce the count of the potion after using it.
+			(potion->get_count())--;
+
+			// Destroy the potion if the count is 0
+			if (potion->get_count() == 0)
+			{
+				item->get_m_item_delegate_ptr().reset();
+				delete item;
+			}
+
+			return true;
+		}
 
 		return false;
 	}

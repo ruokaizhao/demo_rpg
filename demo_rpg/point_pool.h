@@ -21,6 +21,21 @@ public:
 
 	~PointPool() = default;
 
+	PointPoolType get_max_point() const
+	{
+		return m_max_point;
+	}
+
+	PointPoolType get_current_point() const
+	{
+		return m_current_point;
+	}
+
+	bool is_full() const
+	{
+		return m_current_point == m_max_point;
+	}
+
 	bool set_max_point(PointPoolType max_point_value)
 	{
 		if (max_point_value < 1)
@@ -58,16 +73,6 @@ public:
 		}
 
 		m_current_point += value_to_increase;
-	}
-
-	PointPoolType get_max_point() const
-	{
-		return m_max_point;
-	}
-
-	PointPoolType get_current_point() const
-	{
-		return m_current_point;
 	}
 
 private:

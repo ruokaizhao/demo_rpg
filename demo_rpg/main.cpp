@@ -8,12 +8,16 @@ int main()
 
 	{
 		Item* helmet = ItemGenerator::generate_item("Strong Helmet", ArmorSlot::head, CoreStat{ 0u, 0u, 0u, 5u, 5u });
-		Item* chest = ItemGenerator::generate_item( "Strong Chest", ArmorSlot::chest, CoreStat{ 0u, 0u, 0u, 10u, 10u } );
-		Item* legs = ItemGenerator::generate_item( "Strong legs", ArmorSlot::legs, CoreStat{ 0u, 0u, 0u, 2u, 2u } );
+		Item* chest = ItemGenerator::generate_item("Strong Chest", ArmorSlot::chest, CoreStat{ 0u, 0u, 0u, 10u, 10u });
+		Item* legs = ItemGenerator::generate_item("Strong legs", ArmorSlot::legs, CoreStat{ 0u, 0u, 0u, 2u, 2u });
 
 		role_1.equip_equipment(helmet);
 		role_1.equip_equipment(chest);
 		role_1.equip_equipment(legs);
+
+		delete helmet;
+		delete chest;
+		delete legs;
 	}
 
 	{
@@ -26,9 +30,10 @@ int main()
 	{
 		std::cout << role_1.get_class_name() << " Level " << role_1.get_current_level() << '\n'
 			<< "-Experience: " << role_1.get_current_experience() << '/' << role_1.get_experience_till_next_level() << '\n'
-			<< "-Hit Point: " << role_1.get_current_hit_point() << '/' << role_1.get_max_hit_point() << '\n';
+			<< "-Hit Point: " << role_1.get_hit_point()->get_current_point() << '/' << role_1.get_hit_point()->get_max_point() << '\n';
 
-		std::cout << "-Mana Point: " << role_1.get_current_mana_point() << '/' << role_1.get_max_mana_point() << '\n';
+		std::cout << "-Mana Point: " << (role_1.get_mana_point() != nullptr ? role_1.get_mana_point()->get_current_point() : 0u)
+			<< '/' << (role_1.get_mana_point() != nullptr ? role_1.get_mana_point()->get_max_point() : 0u) << '\n';
 
 		std::cout << "-Strength: " << role_1.get_total_strength() << '\n'
 			<< "-Intelligence: " << role_1.get_total_intelligence() << '\n'
@@ -72,6 +77,18 @@ int main()
 			std::cout << weapon->get_name() << ":" << '\n' << "  Min Damage: " << weapon_ptr->m_min_damage << ", " << "Max Damage: " << weapon_ptr->m_max_damage << '\n';
 		}
 	}
+
+	std::cout << '\n' << "-Hit Point before taking damage: " << role_1.get_hit_point()->get_current_point() << '/' << role_1.get_hit_point()->get_max_point() << '\n';
+
+	role_1.get_hit_point()->reduce_current_point(1u);
+
+	std::cout << "-Hit Point after taking damage: " << role_1.get_hit_point()->get_current_point() << '/' << role_1.get_hit_point()->get_max_point() << '\n';
+
+	Item* heal_salve = ItemGenerator::generate_item("Heal Salve", 3u, 0u);
+
+	role_1.use_item(heal_salve);
+
+	std::cout << "-Hit Point after using potion: " << role_1.get_hit_point()->get_current_point() << '/' << role_1.get_hit_point()->get_max_point() << '\n';
 
 	return 0;
 }

@@ -17,4 +17,11 @@ public:
 
 		return item_ptr;
 	}
+
+	static Item* generate_item(std::string name_value, PointPoolType hit_point_value = 0u, ItemCountType count_value = 1u, std::unique_ptr<Buff> buff_value = nullptr)
+	{
+		Item* item_ptr = new Item{ std::unique_ptr<ItemDelegate>(new Potion{name_value, hit_point_value, ((count_value == 0u) ? static_cast<ItemCountType>(1u): count_value), std::move(buff_value)}) };
+
+		return item_ptr;
+	}
 };

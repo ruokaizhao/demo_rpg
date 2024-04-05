@@ -33,8 +33,5 @@ struct Buff
 		CoreStat core_stat_value = CoreStat{})
 		: m_name{ name_value },
 		m_is_debuff{ is_debuff_value },
-		m_duration{ duration_value }
-	{
-		m_stat = core_stat_value;
-	}
+		m_duration{ duration_value }, m_stat{ core_stat_value } {}
 };

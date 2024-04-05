@@ -1,7 +1,8 @@
 #pragma once
+#include "buff.h"
 #include "core_stat.h"
+#include <memory>
 #include <string>
-#include <typeinfo>
 
 // Do not want other people to change this value, so it is placed in the cpp file, and since the constructor needs to read s_id_generator, it is placed in the cpp file as well.
 // But template implementations need to be written in the header file, not a separate source file, so this has to be move to the header file.
@@ -11,16 +12,50 @@ class ItemDelegate
 {
 public:
 	ItemDelegate(std::string name_value) : m_name{ name_value } {}
+	virtual ~ItemDelegate() = default;
 
-	const std::string& get_name() const
+	virtual const std::string& get_name() const = 0;
+protected:
+	std::string m_name;
+};
+
+class Potion final : public ItemDelegate
+{
+	friend class ItemGenerator;
+public:
+	~Potion() override = default;
+
+	const std::string& get_name() const override
 	{
 		return m_name;
 	}
 
-	virtual std::string get_type() const = 0;
-	virtual ~ItemDelegate() = default;
+	ItemCountType& get_count()
+	{
+		return m_count;
+	}
+
+	PointPoolType get_hit_point() const
+	{
+		return m_hit_point;
+	}
+
+	std::unique_ptr<Buff>& get_buff()
+	{
+		return m_buff;
+	}
+
+	Potion() = delete;
+	Potion(const Potion&) = delete;
+	Potion(Potion&&) = delete;
+
 private:
-	std::string m_name;
+	ItemCountType m_count;
+	PointPoolType m_hit_point;
+	std::unique_ptr<Buff> m_buff;
+
+	Potion(std::string name_value, PointPoolType hit_point_value, ItemCountType count_value, std::unique_ptr<Buff> buff_value) : ItemDelegate{ name_value }, m_hit_point{ hit_point_value }, m_count{ count_value }, m_buff{ std::move(buff_value) } {}
+
 };
 
 template <typename T>
@@ -52,9 +87,11 @@ class Armor final : public EquipmentDelegate<ArmorSlot>
 {
 	friend class ItemGenerator;
 public:
-	std::string get_type() const override
+	~Armor() override = default;
+
+	const std::string& get_name() const override
 	{
-		return typeid(*this).name();
+		return m_name;
 	}
 
 	Armor() = delete;
@@ -69,13 +106,15 @@ class Weapon final : public EquipmentDelegate<WeaponSlot>
 {
 	friend class ItemGenerator;
 public:
+	~Weapon() override = default;
+
 	bool m_is_two_handed;
 	DamageType m_min_damage;
 	DamageType m_max_damage;
 
-	std::string get_type() const override
+	const std::string& get_name() const override
 	{
-		return typeid(*this).name();
+		return m_name;
 	}
 
 	Weapon() = delete;

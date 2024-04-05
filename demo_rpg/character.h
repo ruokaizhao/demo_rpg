@@ -32,7 +32,7 @@ public:
 		m_current_level{ 1u },
 		m_current_experience{ 0u },
 		m_experience_till_next_level{ EXPERIENCE_TILL_LEVEL_TWO },
-		hit_point{ std::make_unique<PointPool>() },
+		m_hit_point{ std::make_unique<PointPool>() },
 		m_abilities{} {}
 
 	LevelType get_current_level() const
@@ -42,12 +42,12 @@ public:
 
 	std::unique_ptr<PointPool>& get_hit_point()
 	{
-		return hit_point;
+		return m_hit_point;
 	}
 
 	std::unique_ptr<PointPool>& get_mana_point()
 	{
-		return mana_point;
+		return m_mana_point;
 	}
 
 	ExperienceType get_current_experience() const
@@ -82,8 +82,8 @@ public:
 	virtual void level_up() = 0;
 
 private:
-	std::unique_ptr<PointPool> hit_point;
-	std::unique_ptr<PointPool> mana_point;
+	std::unique_ptr<PointPool> m_hit_point;
+	std::unique_ptr<PointPool> m_mana_point;
 	LevelType m_current_level;
 	ExperienceType m_current_experience;
 	ExperienceType m_experience_till_next_level;
@@ -97,8 +97,10 @@ private:
 			m_current_experience -= m_experience_till_next_level;
 			level_up();
 			m_experience_till_next_level *= LEVEL_UP_SCALAR;
+
 			return true;
 		}
+
 		return false;
 	}
 };
