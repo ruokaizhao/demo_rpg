@@ -7,21 +7,17 @@ int main()
 	Role role_1{ std::unique_ptr<Cleric>{new Cleric{}} };
 
 	{
-		Item* helmet = ItemGenerator::generate_item("Strong Helmet", ArmorSlot::head, CoreStat{ 0u, 0u, 0u, 5u, 5u });
-		Item* chest = ItemGenerator::generate_item("Strong Chest", ArmorSlot::chest, CoreStat{ 0u, 0u, 0u, 10u, 10u });
-		Item* legs = ItemGenerator::generate_item("Strong legs", ArmorSlot::legs, CoreStat{ 0u, 0u, 0u, 2u, 2u });
+		std::unique_ptr<Item> helmet = ItemGenerator::generate_item("Strong Helmet", ArmorSlot::head, CoreStat{ 0u, 0u, 0u, 5u, 5u });
+		std::unique_ptr<Item> chest = ItemGenerator::generate_item("Strong Chest", ArmorSlot::chest, CoreStat{ 0u, 0u, 0u, 10u, 10u });
+		std::unique_ptr<Item> legs = ItemGenerator::generate_item("Strong legs", ArmorSlot::legs, CoreStat{ 0u, 0u, 0u, 2u, 2u });
 
 		role_1.equip_equipment(helmet);
 		role_1.equip_equipment(chest);
 		role_1.equip_equipment(legs);
-
-		delete helmet;
-		delete chest;
-		delete legs;
 	}
 
 	{
-		Item* sword = ItemGenerator::generate_item("Sharp Sword", WeaponSlot::melee, CoreStat{ 0u, 0u, 0u, 0u, 0u }, true, 10u, 20u);
+		std::unique_ptr<Item> sword = ItemGenerator::generate_item("Sharp Sword", WeaponSlot::melee, CoreStat{ 0u, 0u, 0u, 0u, 0u }, true, 10u, 20u);
 
 		role_1.equip_equipment(sword);
 	}
@@ -60,21 +56,22 @@ int main()
 	role_1.add_buff(Buff{ "Weak", true, 2u, 6u });
 
 	std::cout << "Armors: " << '\n';
-	for (const auto& armor : role_1.get_armors())
+	for (const auto& item : role_1.get_armors())
 	{
-		if (armor != nullptr)
+		if (item != nullptr)
 		{
+			Armor* armor = static_cast<Armor*>(item->get_m_item_delegate_ptr().get());
 			std::cout << armor->get_name() << ":" << '\n' << "  Armor: " << armor->get_stat().m_physical_defense << ", " << "Magic Resistance: " << armor->get_stat().m_magic_resistance << '\n';
 		}
 	}
 
 	std::cout << "Weapons: " << '\n';
-	for (const auto& weapon : role_1.get_weapons())
+	for (const auto& item : role_1.get_weapons())
 	{
-		if (weapon != nullptr)
+		if (item != nullptr)
 		{
-			Weapon* weapon_ptr = static_cast<Weapon*>(weapon.get());
-			std::cout << weapon->get_name() << ":" << '\n' << "  Min Damage: " << weapon_ptr->m_min_damage << ", " << "Max Damage: " << weapon_ptr->m_max_damage << '\n';
+			Weapon* weapon_ptr = static_cast<Weapon*>(item->get_m_item_delegate_ptr().get());
+			std::cout << weapon_ptr->get_name() << ":" << '\n' << "  Min Damage: " << weapon_ptr->m_min_damage << ", " << "Max Damage: " << weapon_ptr->m_max_damage << '\n';
 		}
 	}
 
@@ -84,7 +81,7 @@ int main()
 
 	std::cout << "-Hit Point after taking damage: " << role_1.get_hit_point()->get_current_point() << '/' << role_1.get_hit_point()->get_max_point() << '\n';
 
-	Item* heal_salve = ItemGenerator::generate_item("Heal Salve", 3u, 0u);
+	std::unique_ptr<Item> heal_salve = ItemGenerator::generate_item("Heal Salve", 3u, 0u);
 
 	role_1.use_item(heal_salve);
 

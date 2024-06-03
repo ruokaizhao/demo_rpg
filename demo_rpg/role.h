@@ -43,11 +43,13 @@ public:
 	StatType get_total_strength() const
 	{
 		StatType total_strength_from_armors = 0u;
-		for (const auto& armor : m_armors)
+		for (const auto& item : m_armors)
 		{
-			if (armor != nullptr)
+			if (item != nullptr)
 			{
-				total_strength_from_armors += armor->get_stat().m_strength;
+				std::unique_ptr<EquipmentDelegate<ArmorSlot>> equipment = std::unique_ptr<EquipmentDelegate<ArmorSlot>>(static_cast<EquipmentDelegate<ArmorSlot>*>(item->get_m_item_delegate_ptr().get()));
+				total_strength_from_armors += equipment->get_stat().m_strength;
+				equipment.release();
 			}
 		}
 		return m_character_delegate_ptr->get_total_strength() + total_strength_from_armors < 0 ? 0 : m_character_delegate_ptr->get_total_strength() + total_strength_from_armors;
@@ -56,11 +58,13 @@ public:
 	StatType get_total_intelligence() const
 	{
 		StatType total_intelligence_from_armors = 0u;
-		for (const auto& armor : m_armors)
+		for (const auto& item : m_armors)
 		{
-			if (armor != nullptr)
+			if (item != nullptr)
 			{
-				total_intelligence_from_armors += armor->get_stat().m_intelligence;
+				std::unique_ptr<EquipmentDelegate<ArmorSlot>> equipment = std::unique_ptr<EquipmentDelegate<ArmorSlot>>(static_cast<EquipmentDelegate<ArmorSlot>*>(item->get_m_item_delegate_ptr().get()));
+				total_intelligence_from_armors += equipment->get_stat().m_intelligence;
+				equipment.release();
 			}
 		}
 		return m_character_delegate_ptr->get_total_intelligence() + total_intelligence_from_armors < 0 ? 0 : m_character_delegate_ptr->get_total_intelligence() + total_intelligence_from_armors;
@@ -69,11 +73,13 @@ public:
 	StatType get_total_agility() const
 	{
 		StatType total_agility_from_armors = 0u;
-		for (const auto& armor : m_armors)
+		for (const auto& item : m_armors)
 		{
-			if (armor != nullptr)
+			if (item != nullptr)
 			{
-				total_agility_from_armors += armor->get_stat().m_agility;
+				std::unique_ptr<EquipmentDelegate<ArmorSlot>> equipment = std::unique_ptr<EquipmentDelegate<ArmorSlot>>(static_cast<EquipmentDelegate<ArmorSlot>*>(item->get_m_item_delegate_ptr().get()));
+				total_agility_from_armors += equipment->get_stat().m_agility;
+				equipment.release();
 			}
 		}
 		return m_character_delegate_ptr->get_total_agility() + total_agility_from_armors < 0 ? 0 : m_character_delegate_ptr->get_total_agility() + total_agility_from_armors;
@@ -82,11 +88,13 @@ public:
 	StatType get_total_physical_defense() const
 	{
 		StatType total_physical_defense_from_armors = 0u;
-		for (const auto& armor : m_armors)
+		for (const auto& item : m_armors)
 		{
-			if (armor != nullptr)
+			if (item != nullptr)
 			{
-				total_physical_defense_from_armors += armor->get_stat().m_physical_defense;
+				std::unique_ptr<EquipmentDelegate<ArmorSlot>> equipment = std::unique_ptr<EquipmentDelegate<ArmorSlot>>(static_cast<EquipmentDelegate<ArmorSlot>*>(item->get_m_item_delegate_ptr().get()));
+				total_physical_defense_from_armors += equipment->get_stat().m_physical_defense;
+				equipment.release();
 			}
 		}
 		return m_character_delegate_ptr->get_total_physical_defense() + total_physical_defense_from_armors < 0 ? 0 : m_character_delegate_ptr->get_total_physical_defense() + total_physical_defense_from_armors;
@@ -95,27 +103,29 @@ public:
 	StatType get_total_magic_resistance() const
 	{
 		StatType total_magic_resistance_from_armors = 0u;
-		for (const auto& armor : m_armors)
+		for (const auto& item : m_armors)
 		{
-			if (armor != nullptr)
+			if (item != nullptr)
 			{
-				total_magic_resistance_from_armors += armor->get_stat().m_magic_resistance;
+				std::unique_ptr<EquipmentDelegate<ArmorSlot>> equipment = std::unique_ptr<EquipmentDelegate<ArmorSlot>>(static_cast<EquipmentDelegate<ArmorSlot>*>(item->get_m_item_delegate_ptr().get()));
+				total_magic_resistance_from_armors += equipment->get_stat().m_magic_resistance;
+				equipment.release();
 			}
 		}
 		return m_character_delegate_ptr->get_total_magic_resistance() + total_magic_resistance_from_armors < 0 ? 0 : m_character_delegate_ptr->get_total_magic_resistance() + total_magic_resistance_from_armors;
 	}
 
-	const std::vector<Ability>& get_abilities() const
+	std::vector<Ability>& get_abilities()
 	{
 		return m_character_delegate_ptr->get_abilities();
 	}
 
-	const std::array<std::unique_ptr<EquipmentDelegate<ArmorSlot>>, static_cast<size_t>(ArmorSlot::number_of_slots)>& get_armors() const
+	const std::array<std::unique_ptr<Item>, static_cast<size_t>(ArmorSlot::number_of_slots)>& get_armors() const
 	{
 		return m_armors;
 	}
 
-	const std::array<std::unique_ptr<EquipmentDelegate<WeaponSlot>>, static_cast<size_t>(WeaponSlot::number_of_slots)>& get_weapons() const
+	const std::array<std::unique_ptr<Item>, static_cast<size_t>(WeaponSlot::number_of_slots)>& get_weapons() const
 	{
 		return m_weapons;
 	}
@@ -132,7 +142,7 @@ public:
 	}
 
 	// unique_ptr needs to be passed by reference, because it is not copyable.
-	bool equip_equipment(Item* item)
+	bool equip_equipment(std::unique_ptr<Item>& item)
 	{
 		if (item == nullptr || item->get_m_item_delegate_ptr() == nullptr)
 		{
@@ -141,22 +151,28 @@ public:
 
 		if (dynamic_cast<Armor*>(item->get_m_item_delegate_ptr().get()) != nullptr)
 		{
-			std::unique_ptr<EquipmentDelegate<ArmorSlot>> equipment = static_cast<std::unique_ptr<EquipmentDelegate<ArmorSlot>>>(static_cast<EquipmentDelegate<ArmorSlot>*>(item->get_m_item_delegate_ptr().release()));
+			std::unique_ptr<EquipmentDelegate<ArmorSlot>> equipment = std::unique_ptr<EquipmentDelegate<ArmorSlot>>(static_cast<EquipmentDelegate<ArmorSlot>*>(item->get_m_item_delegate_ptr().get()));
 			// This is just for comparison, the code in the below if block is better, the reason being that the
 			// get_slot has been moved to the parent class and we can call get_slot directly on an instance of Equipment,
 			// therefore, we no longer need to cast the equipment to Armor.
-			std::unique_ptr<Armor> armor = static_cast<std::unique_ptr<Armor>>(dynamic_cast<Armor*>(equipment.release()));
+			std::unique_ptr<Armor> armor = static_cast<std::unique_ptr<Armor>>(static_cast<Armor*>(equipment.get()));
 
-			m_armors.at(static_cast<size_t>(armor->get_slot())) = std::move(armor);
+			m_armors.at(static_cast<size_t>(armor->get_slot())) = std::move(item);
+
+			// Objects pointed by equipment and armor are still needed, so we need to prevent them being deleted by the smart pointers by releasing the smart pointers.
+			equipment.release();
+			armor.release();
 
 			return true;
 		}
 
 		if (dynamic_cast<Weapon*>(item->get_m_item_delegate_ptr().get()) != nullptr)
 		{
-			std::unique_ptr<EquipmentDelegate<WeaponSlot>> equipment = static_cast<std::unique_ptr<EquipmentDelegate<WeaponSlot>>>(static_cast<EquipmentDelegate<WeaponSlot>*>(item->get_m_item_delegate_ptr().release()));
+			std::unique_ptr<EquipmentDelegate<WeaponSlot>> equipment = static_cast<std::unique_ptr<EquipmentDelegate<WeaponSlot>>>(static_cast<EquipmentDelegate<WeaponSlot>*>(item->get_m_item_delegate_ptr().get()));
 			// No need to check if the slot is equiped, when assigning a new value to smart pointer, the old value is automatically deleted.
-			m_weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(equipment);
+			m_weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
+
+			equipment.release();
 
 			return true;
 		}
@@ -164,7 +180,7 @@ public:
 		return false;
 	}
 
-	bool use_item(Item* item)
+	bool use_item(std::unique_ptr<Item>& item)
 	{
 		if (item == nullptr || item->get_m_item_delegate_ptr() == nullptr)
 		{
@@ -197,8 +213,7 @@ public:
 			// Destroy the potion if the count is 0
 			if (potion->get_count() == 0)
 			{
-				item->get_m_item_delegate_ptr().reset();
-				delete item;
+				potion.reset();
 			}
 
 			return true;
@@ -215,6 +230,6 @@ public:
 private:
 	std::unique_ptr<CharacterDelegate> m_character_delegate_ptr;
 	// If not initialized, smart pointers are default to nullptr.
-	std::array<std::unique_ptr<EquipmentDelegate<ArmorSlot>>, static_cast<size_t>(ArmorSlot::number_of_slots)> m_armors;
-	std::array<std::unique_ptr<EquipmentDelegate<WeaponSlot>>, static_cast<size_t>(WeaponSlot::number_of_slots)> m_weapons;
+	std::array<std::unique_ptr<Item>, static_cast<size_t>(ArmorSlot::number_of_slots)> m_armors;
+	std::array<std::unique_ptr<Item>, static_cast<size_t>(WeaponSlot::number_of_slots)> m_weapons;
 };
