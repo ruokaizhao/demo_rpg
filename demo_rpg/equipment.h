@@ -5,7 +5,7 @@
 #include <string>
 
 // Do not want other people to change this value, so it is placed in the cpp file, and since the constructor needs to read s_id_generator, it is placed in the cpp file as well.
-// But template implementations need to be written in the header file, not a separate source file, so this has to be move to the header file.
+// But template implementations need to be written in the header file, not a separate source file, so this has to be moved to the header file.
 static IdType s_id_generator = 0u;
 
 class ItemDelegate
@@ -55,7 +55,6 @@ private:
 	std::unique_ptr<Buff> m_buff;
 
 	Potion(std::string name_value, PointPoolType hit_point_value, ItemCountType count_value, std::unique_ptr<Buff> buff_value) : ItemDelegate{ name_value }, m_hit_point{ hit_point_value }, m_count{ count_value }, m_buff{ std::move(buff_value) } {}
-
 };
 
 template <typename T>

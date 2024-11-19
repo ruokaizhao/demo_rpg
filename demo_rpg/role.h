@@ -1,6 +1,7 @@
 #pragma once
 #include "character.h"
 #include <array>
+#include <algorithm>
 
 class Role
 {
@@ -120,6 +121,11 @@ public:
 		return m_character_delegate_ptr->get_abilities();
 	}
 
+	std::vector<std::unique_ptr<Item>>& get_inventory()
+	{
+		return m_inventory;
+	}
+
 	const std::array<std::unique_ptr<Item>, static_cast<size_t>(ArmorSlot::number_of_slots)>& get_armors() const
 	{
 		return m_armors;
@@ -151,27 +157,36 @@ public:
 
 		if (dynamic_cast<Armor*>(item->get_m_item_delegate_ptr().get()) != nullptr)
 		{
-			std::unique_ptr<EquipmentDelegate<ArmorSlot>> equipment = std::unique_ptr<EquipmentDelegate<ArmorSlot>>(static_cast<EquipmentDelegate<ArmorSlot>*>(item->get_m_item_delegate_ptr().get()));
-			// This is just for comparison, the code in the below if block is better, the reason being that the
-			// get_slot has been moved to the parent class and we can call get_slot directly on an instance of Equipment,
-			// therefore, we no longer need to cast the equipment to Armor.
-			std::unique_ptr<Armor> armor = static_cast<std::unique_ptr<Armor>>(static_cast<Armor*>(equipment.get()));
+			auto equipment = std::unique_ptr<Armor>(static_cast<Armor*>(item->get_m_item_delegate_ptr().get()));
 
-			m_armors.at(static_cast<size_t>(armor->get_slot())) = std::move(item);
-
+			if (m_armors.at(static_cast<size_t>(equipment->get_slot())) == nullptr)
+			{
+				m_armors.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
+			}
+			else
+			{
+				add_to_inventory(m_armors.at(static_cast<size_t>(equipment->get_slot())));
+				m_armors.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
+			}
 			// Objects pointed by equipment and armor are still needed, so we need to prevent them being deleted by the smart pointers by releasing the smart pointers.
 			equipment.release();
-			armor.release();
 
 			return true;
 		}
 
 		if (dynamic_cast<Weapon*>(item->get_m_item_delegate_ptr().get()) != nullptr)
 		{
-			std::unique_ptr<EquipmentDelegate<WeaponSlot>> equipment = static_cast<std::unique_ptr<EquipmentDelegate<WeaponSlot>>>(static_cast<EquipmentDelegate<WeaponSlot>*>(item->get_m_item_delegate_ptr().get()));
-			// No need to check if the slot is equiped, when assigning a new value to smart pointer, the old value is automatically deleted.
-			m_weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
+			auto equipment = std::unique_ptr<Weapon>(static_cast<Weapon*>(item->get_m_item_delegate_ptr().get()));
 
+			if (m_weapons.at(static_cast<size_t>(equipment->get_slot())) == nullptr)
+			{
+				m_weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
+			}
+			else
+			{
+				add_to_inventory(m_weapons.at(static_cast<size_t>(equipment->get_slot())));
+				m_weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
+			}
 			equipment.release();
 
 			return true;
@@ -180,7 +195,7 @@ public:
 		return false;
 	}
 
-	bool use_item(std::unique_ptr<Item>& item)
+	bool use_item(const std::unique_ptr<Item>& item)
 	{
 		if (item == nullptr || item->get_m_item_delegate_ptr() == nullptr)
 		{
@@ -189,7 +204,7 @@ public:
 
 		if (dynamic_cast<Potion*>(item->get_m_item_delegate_ptr().get()))
 		{
-			std::unique_ptr<Potion> potion = static_cast<std::unique_ptr<Potion>>(static_cast<Potion*>(item->get_m_item_delegate_ptr().release()));
+			auto potion = std::unique_ptr<Potion>(static_cast<Potion*>(item->get_m_item_delegate_ptr().get()));
 
 			if (potion->get_buff() != nullptr)
 			{
@@ -199,6 +214,7 @@ public:
 			// If the hit point is full and the potion does not have a buff, the potion will not be used.
 			if (get_hit_point()->is_full() && potion->get_buff() == nullptr)
 			{
+				potion.release();
 				return false;
 			}
 
@@ -213,13 +229,33 @@ public:
 			// Destroy the potion if the count is 0
 			if (potion->get_count() == 0)
 			{
-				potion.reset();
+				item->mark_for_deletion();
+				cleanup_inventory();
 			}
+
+			potion.release();
 
 			return true;
 		}
 
 		return false;
+	}
+
+	void cleanup_inventory()
+	{
+		m_inventory.erase(std::remove_if(m_inventory.begin(), m_inventory.end(), [](const std::unique_ptr<Item>& item) {return item->is_marked_for_deletion(); }), m_inventory.end());
+	}
+
+	bool add_to_inventory(std::unique_ptr<Item>& item)
+	{
+		if (item == nullptr || item->get_m_item_delegate_ptr() == nullptr)
+		{
+			return false;
+		}
+
+		get_inventory().push_back(std::move(item));
+
+		return true;
 	}
 
 	// Delete constructors
@@ -228,8 +264,9 @@ public:
 	Role(Role&&) = delete;
 
 private:
-	std::unique_ptr<CharacterDelegate> m_character_delegate_ptr;
 	// If not initialized, smart pointers are default to nullptr.
+	std::unique_ptr<CharacterDelegate> m_character_delegate_ptr;
+	std::vector<std::unique_ptr<Item>> m_inventory;
 	std::array<std::unique_ptr<Item>, static_cast<size_t>(ArmorSlot::number_of_slots)> m_armors;
 	std::array<std::unique_ptr<Item>, static_cast<size_t>(WeaponSlot::number_of_slots)> m_weapons;
 };
