@@ -1,6 +1,6 @@
 #include "role.h"
 #include <iostream>
-#include "item_generator.h"
+#include "item_manager.h"
 #include <algorithm>
 
 int main()
@@ -8,22 +8,20 @@ int main()
 	Role role_1{ std::unique_ptr<Cleric>{new Cleric{}} };
 
 	
-	std::unique_ptr<Item> helmet = ItemGenerator::generate_item("Strong Helmet", ArmorSlot::head, CoreStat{0u, 0u, 0u, 5u, 5u});
-	std::unique_ptr<Item> chest = ItemGenerator::generate_item("Strong Chest", ArmorSlot::chest, CoreStat{0u, 0u, 0u, 10u, 10u});
-	std::unique_ptr<Item> legs = ItemGenerator::generate_item("Strong legs", ArmorSlot::legs, CoreStat{ 0u, 0u, 0u, 2u, 2u });
-	std::unique_ptr<Item> low_level_legs = ItemGenerator::generate_item("Low Level legs", ArmorSlot::legs, CoreStat{0u, 0u, 0u, 1u, 1u});
+	std::unique_ptr<Item> helmet = ItemManager::generate_item("Strong Helmet", ArmorSlot::head, CoreStat{0u, 0u, 0u, 5u, 5u});
+	std::unique_ptr<Item> chest = ItemManager::generate_item("Strong Chest", ArmorSlot::chest, CoreStat{0u, 0u, 0u, 10u, 10u});
+	std::unique_ptr<Item> legs = ItemManager::generate_item("Strong legs", ArmorSlot::legs, CoreStat{ 0u, 0u, 0u, 2u, 2u });
+	std::unique_ptr<Item> low_level_legs = ItemManager::generate_item("Low Level legs", ArmorSlot::legs, CoreStat{0u, 0u, 0u, 1u, 1u});
 
-	role_1.equip_equipment(helmet);
-	role_1.equip_equipment(chest);
-	role_1.equip_equipment(low_level_legs);
-	role_1.equip_equipment(legs);
-	
+	ItemManager::equip_equipment(role_1, helmet);
+	ItemManager::equip_equipment(role_1, chest);
+	ItemManager::equip_equipment(role_1, low_level_legs);
+	ItemManager::equip_equipment(role_1, legs);
 
 	
-	std::unique_ptr<Item> sword = ItemGenerator::generate_item("Sharp Sword", WeaponSlot::melee, CoreStat{0u, 0u, 0u, 0u, 0u}, true, 10u, 20u);
+	std::unique_ptr<Item> sword = ItemManager::generate_item("Sharp Sword", WeaponSlot::melee, CoreStat{0u, 0u, 0u, 0u, 0u}, true, 10u, 20u);
 
-	role_1.equip_equipment(sword);
-	
+	ItemManager::equip_equipment(role_1, sword);
 
 	for (size_t i = 0; i < 2; ++i)
 	{
@@ -87,28 +85,28 @@ int main()
 
 	std::cout << "-Hit Point after taking damage: " << role_1.get_hit_point()->get_current_point() << '/' << role_1.get_hit_point()->get_max_point() << '\n';
 
-	std::unique_ptr<Item> heal_salve = ItemGenerator::generate_item("Heal Salve", 2u, 5u);
+	std::unique_ptr<Item> heal_salve = ItemManager::generate_item("Heal Salve", 2u, 5u);
 
-	role_1.add_to_inventory(heal_salve);
+	ItemManager::add_to_inventory(role_1, heal_salve);
 
-	role_1.use_item(role_1.get_inventory().at(1));
-	role_1.use_item(role_1.get_inventory().at(1));
-	role_1.use_item(role_1.get_inventory().at(1));
-	role_1.use_item(role_1.get_inventory().at(1));
+	ItemManager::use_item(role_1, role_1.get_inventory().at(1));
+	ItemManager::use_item(role_1, role_1.get_inventory().at(1));
+	ItemManager::use_item(role_1, role_1.get_inventory().at(1));
+	ItemManager::use_item(role_1, role_1.get_inventory().at(1));
 
 	std::cout << "-Hit Point after using potion: " << role_1.get_hit_point()->get_current_point() << '/' << role_1.get_hit_point()->get_max_point() << '\n';
 
 	try {
-		role_1.use_item(role_1.get_inventory().at(1));
+		ItemManager::use_item(role_1, role_1.get_inventory().at(1));
 	}
 	catch (const std::out_of_range& e) {
 		std::cerr << "Error: " << e.what() << std::endl;
 	}
 
 	
-	std::unique_ptr<Item> Cleaver = ItemGenerator::generate_item("Power Cleaver", WeaponSlot::melee, CoreStat{0u, 0u, 0u, 0u, 0u}, true, 15u, 25u);
+	std::unique_ptr<Item> Cleaver = ItemManager::generate_item("Power Cleaver", WeaponSlot::melee, CoreStat{0u, 0u, 0u, 0u, 0u}, true, 15u, 25u);
 
-	role_1.equip_equipment(Cleaver);
+	ItemManager::equip_equipment(role_1, Cleaver);
 
 	std::cout << "Weapons: " << '\n';
 	for (const auto &item : role_1.get_weapons())

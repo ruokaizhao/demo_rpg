@@ -5,6 +5,7 @@
 
 class Role
 {
+	friend class ItemManager;
 public:
 	Role(std::unique_ptr<CharacterDelegate> character_delegate_ptr_value) : m_character_delegate_ptr{ std::move(character_delegate_ptr_value) } {}
 
@@ -121,7 +122,7 @@ public:
 		return m_character_delegate_ptr->get_abilities();
 	}
 
-	std::vector<std::unique_ptr<Item>>& get_inventory()
+	const std::vector<std::unique_ptr<Item>>& get_inventory() const
 	{
 		return m_inventory;
 	}
@@ -136,6 +137,16 @@ public:
 		return m_weapons;
 	}
 
+	const std::unique_ptr<Item>& get_armor_at(ArmorSlot slot) const
+	{
+		return m_armors.at(static_cast<size_t>(slot));
+	}
+
+	const std::unique_ptr<Item>& get_weapon_at(WeaponSlot slot) const
+	{
+		return m_weapons.at(static_cast<size_t>(slot));
+	}
+
 	// Modifiers
 	void gain_experience(ExperienceType experience_value) const
 	{
@@ -145,117 +156,6 @@ public:
 	void add_buff(const Buff& buff)
 	{
 		m_character_delegate_ptr->add_buff(buff);
-	}
-
-	// unique_ptr needs to be passed by reference, because it is not copyable.
-	bool equip_equipment(std::unique_ptr<Item>& item)
-	{
-		if (item == nullptr || item->get_m_item_delegate_ptr() == nullptr)
-		{
-			return false;
-		}
-
-		if (dynamic_cast<Armor*>(item->get_m_item_delegate_ptr().get()) != nullptr)
-		{
-			auto equipment = std::unique_ptr<Armor>(static_cast<Armor*>(item->get_m_item_delegate_ptr().get()));
-
-			if (m_armors.at(static_cast<size_t>(equipment->get_slot())) == nullptr)
-			{
-				m_armors.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
-			}
-			else
-			{
-				add_to_inventory(m_armors.at(static_cast<size_t>(equipment->get_slot())));
-				m_armors.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
-			}
-			// Objects pointed by equipment and armor are still needed, so we need to prevent them being deleted by the smart pointers by releasing the smart pointers.
-			equipment.release();
-
-			return true;
-		}
-
-		if (dynamic_cast<Weapon*>(item->get_m_item_delegate_ptr().get()) != nullptr)
-		{
-			auto equipment = std::unique_ptr<Weapon>(static_cast<Weapon*>(item->get_m_item_delegate_ptr().get()));
-
-			if (m_weapons.at(static_cast<size_t>(equipment->get_slot())) == nullptr)
-			{
-				m_weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
-			}
-			else
-			{
-				add_to_inventory(m_weapons.at(static_cast<size_t>(equipment->get_slot())));
-				m_weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
-			}
-			equipment.release();
-
-			return true;
-		}
-
-		return false;
-	}
-
-	bool use_item(const std::unique_ptr<Item>& item)
-	{
-		if (item == nullptr || item->get_m_item_delegate_ptr() == nullptr)
-		{
-			return false;
-		}
-
-		if (dynamic_cast<Potion*>(item->get_m_item_delegate_ptr().get()))
-		{
-			auto potion = std::unique_ptr<Potion>(static_cast<Potion*>(item->get_m_item_delegate_ptr().get()));
-
-			if (potion->get_buff() != nullptr)
-			{
-				add_buff(*(potion->get_buff()));
-			}
-
-			// If the hit point is full and the potion does not have a buff, the potion will not be used.
-			if (get_hit_point()->is_full() && potion->get_buff() == nullptr)
-			{
-				potion.release();
-				return false;
-			}
-
-			if (!get_hit_point()->is_full())
-			{
-				get_hit_point()->increase_current_point(potion->get_hit_point());
-			}
-
-			// Reduce the count of the potion after using it.
-			(potion->get_count())--;
-
-			// Destroy the potion if the count is 0
-			if (potion->get_count() == 0)
-			{
-				item->mark_for_deletion();
-				cleanup_inventory();
-			}
-
-			potion.release();
-
-			return true;
-		}
-
-		return false;
-	}
-
-	void cleanup_inventory()
-	{
-		m_inventory.erase(std::remove_if(m_inventory.begin(), m_inventory.end(), [](const std::unique_ptr<Item>& item) {return item->is_marked_for_deletion(); }), m_inventory.end());
-	}
-
-	bool add_to_inventory(std::unique_ptr<Item>& item)
-	{
-		if (item == nullptr || item->get_m_item_delegate_ptr() == nullptr)
-		{
-			return false;
-		}
-
-		get_inventory().push_back(std::move(item));
-
-		return true;
 	}
 
 	// Delete constructors

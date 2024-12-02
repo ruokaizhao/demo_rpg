@@ -4,11 +4,11 @@
 
 class Item
 {
-	friend class ItemGenerator;
+	friend class ItemManager;
 public:
 	~Item() = default;
 
-	std::unique_ptr<ItemDelegate>& get_m_item_delegate_ptr()
+	const std::unique_ptr<ItemDelegate>& get_m_item_delegate_ptr() const
 	{
 		return m_item_delegate_ptr;
 	}

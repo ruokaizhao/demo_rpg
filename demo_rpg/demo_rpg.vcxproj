@@ -136,7 +136,7 @@
     <ClInclude Include="core_stat.h" />
     <ClInclude Include="equipment.h" />
     <ClInclude Include="item.h" />
-    <ClInclude Include="item_generator.h" />
+    <ClInclude Include="item_manager.h" />
     <ClInclude Include="point_pool.h" />
     <ClInclude Include="role.h" />
     <ClInclude Include="stat.h" />

@@ -1,6 +1,5 @@
 #pragma once
 #include "buff.h"
-#include "core_stat.h"
 #include <memory>
 #include <string>
 
@@ -21,7 +20,7 @@ protected:
 
 class Potion final : public ItemDelegate
 {
-	friend class ItemGenerator;
+	friend class ItemManager;
 public:
 	~Potion() override = default;
 
@@ -84,7 +83,7 @@ private:
 
 class Armor final : public EquipmentDelegate<ArmorSlot>
 {
-	friend class ItemGenerator;
+	friend class ItemManager;
 public:
 	~Armor() override = default;
 
@@ -103,7 +102,7 @@ private:
 
 class Weapon final : public EquipmentDelegate<WeaponSlot>
 {
-	friend class ItemGenerator;
+	friend class ItemManager;
 public:
 	~Weapon() override = default;
 
