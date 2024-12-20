@@ -27,11 +27,11 @@ struct Buff
 		m_stat.m_magic_resistance = magic_resistance_value;
 	}
 
-	Buff(std::string name_value = "unnamed",
+	Buff(CoreStat core_stat_value, std::string name_value = "unnamed",
 		bool is_debuff_value = false,
-		BuffDurationType duration_value = 2u,
-		CoreStat core_stat_value = CoreStat{})
+		BuffDurationType duration_value = 2u)
 		: m_name{ name_value },
 		m_is_debuff{ is_debuff_value },
-		m_duration{ duration_value }, m_stat{ core_stat_value } {}
+		m_duration{ duration_value }, m_stat{ core_stat_value } {
+	}
 };
