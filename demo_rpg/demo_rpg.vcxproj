@@ -133,13 +133,12 @@
     <ClInclude Include="include\demo_rpg\ability.h" />
     <ClInclude Include="include\demo_rpg\buff.h" />
     <ClInclude Include="include\demo_rpg\character.h" />
-    <ClInclude Include="include\demo_rpg\core_stat.h" />
+    <ClInclude Include="include\demo_rpg\base_stat.h" />
     <ClInclude Include="include\demo_rpg\item.h" />
     <ClInclude Include="include\demo_rpg\game_item.h" />
     <ClInclude Include="include\demo_rpg\game_item_manager.h" />
     <ClInclude Include="include\demo_rpg\point_pool.h" />
     <ClInclude Include="include\demo_rpg\role.h" />
-    <ClInclude Include="include\demo_rpg\stat.h" />
     <ClInclude Include="include\demo_rpg\types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

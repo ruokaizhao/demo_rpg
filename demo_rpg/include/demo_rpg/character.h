@@ -2,7 +2,8 @@
 #include "ability.h"
 #include "game_item.h"
 #include "point_pool.h"
-#include "stat.h"
+#include "base_stat.h"
+#include <vector>
 
 #define SET_UP_CHARACTER                                     \
 	get_hit_point()->set_max_point(BASE_HIT_POINT);          \
@@ -20,19 +21,44 @@
 				  static_cast<StatType>((BASE_INTELLIGENCE + 1u) / 2.0f),                                                               \
 				  static_cast<StatType>((BASE_AGILITY + 1u) / 2.0f))
 
-class Character : public Stat
+class Character
 {
 	static constexpr LevelType LEVEL_UP_SCALAR = 2u;
 	static constexpr ExperienceType EXPERIENCE_TILL_LEVEL_TWO = 100u;
 
 public:
 	Character()
-		: Stat{ 0u, 0u, 0u },
+		: m_base_stat{ BaseStat{} },
 		m_current_level{ 1u },
 		m_current_experience{ 0u },
 		m_experience_till_next_level{ EXPERIENCE_TILL_LEVEL_TWO },
 		m_hit_point{ std::make_unique<PointPool>() },
 		m_abilities{} {
+	}
+
+	const StatType get_base_strength() const
+	{
+		return m_base_stat.m_strength;
+	}
+
+	const StatType get_base_intelligence() const
+	{
+		return m_base_stat.m_intelligence;
+	}
+
+	const StatType get_base_agility() const
+	{
+		return m_base_stat.m_agility;
+	}
+
+	const StatType get_base_physical_defense() const
+	{
+		return m_base_stat.m_physical_defense;
+	}
+
+	const StatType get_base_magic_resistance() const
+	{
+		return m_base_stat.m_magic_resistance;
 	}
 
 	LevelType get_current_level() const
@@ -74,16 +100,27 @@ public:
 		}
 	}
 
-	void add_buff(const Buff& buff)
-	{
-		apply_buff(buff);
-	}
-
 	virtual ~Character() = default;
 	virtual std::string get_class_name() const = 0;
 	virtual void level_up() = 0;
 
+protected:
+	void increase_stat(StatType strength_value = 0u, StatType intelligence_value = 0u, StatType agility_value = 0u, StatType armor_value = 0u, StatType magic_resistance_value = 0u)
+	{
+		m_base_stat.m_strength += strength_value;
+		m_base_stat.m_intelligence += intelligence_value;
+		m_base_stat.m_agility += agility_value;
+		m_base_stat.m_physical_defense += armor_value;
+		m_base_stat.m_magic_resistance += magic_resistance_value;
+	}
+
+	void increase_stat(BaseStat stats_value)
+	{
+		m_base_stat += stats_value;
+	}
+
 private:
+	BaseStat m_base_stat;
 	std::unique_ptr<PointPool> m_hit_point;
 	std::unique_ptr<PointPool> m_mana_point;
 	LevelType m_current_level;

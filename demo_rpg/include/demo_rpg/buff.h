@@ -1,12 +1,12 @@
 #pragma once
-#include "core_stat.h"
+#include "base_stat.h"
 
 struct Buff
 {
 	std::string m_name;
 	bool m_is_debuff;
 	BuffDurationType m_duration;
-	CoreStat m_stat;
+	BaseStat m_stat;
 
 	Buff(std::string name_value = "unnamed",
 		bool is_debuff_value = false,
@@ -27,7 +27,7 @@ struct Buff
 		m_stat.m_magic_resistance = magic_resistance_value;
 	}
 
-	Buff(CoreStat core_stat_value, std::string name_value = "unnamed",
+	Buff(BaseStat core_stat_value, std::string name_value = "unnamed",
 		bool is_debuff_value = false,
 		BuffDurationType duration_value = 2u)
 		: m_name{ name_value },
