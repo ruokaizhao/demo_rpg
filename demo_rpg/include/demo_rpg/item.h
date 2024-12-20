@@ -60,7 +60,7 @@ template <typename T>
 class Equipment : public Item
 {
 public:
-	Equipment(std::string name_value, T slot_value, CoreStat stat_value) : Item{ name_value }, m_slot{ slot_value }, m_stat{ stat_value }, m_id{ ++s_id_generator } {}
+	Equipment(std::string name_value, T slot_value, BaseStat stat_value) : Item{ name_value }, m_slot{ slot_value }, m_stat{ stat_value }, m_id{ ++s_id_generator } {}
 
 	virtual ~Equipment() = default;
 
@@ -69,7 +69,7 @@ public:
 		return m_slot;
 	}
 
-	const CoreStat& get_stat() const
+	const BaseStat& get_stat() const
 	{
 		return m_stat;
 	}
@@ -78,7 +78,7 @@ private:
 	const IdType m_id;
 	// By using template, we can declare m_slot here in the parent class instead of in the child classes
 	T m_slot;
-	CoreStat m_stat;
+	BaseStat m_stat;
 };
 
 class Armor final : public Equipment<ArmorSlot>
@@ -97,7 +97,7 @@ public:
 	Armor(Armor&&) = delete;
 
 private:
-	Armor(std::string name_value, ArmorSlot slot_value, CoreStat stat_value) : Equipment{ name_value,slot_value, stat_value } {}
+	Armor(std::string name_value, ArmorSlot slot_value, BaseStat stat_value) : Equipment{ name_value,slot_value, stat_value } {}
 };
 
 class Weapon final : public Equipment<WeaponSlot>
@@ -120,5 +120,5 @@ public:
 	Weapon(Weapon&&) = delete;
 
 private:
-	Weapon(std::string name_value, WeaponSlot slot_value, CoreStat stat_value, bool is_two_handed_value, DamageType min_damage_value, DamageType max_damage_value) : Equipment{ name_value,slot_value, stat_value }, m_is_two_handed{ is_two_handed_value }, m_min_damage{ min_damage_value }, m_max_damage{ max_damage_value } {}
+	Weapon(std::string name_value, WeaponSlot slot_value, BaseStat stat_value, bool is_two_handed_value, DamageType min_damage_value, DamageType max_damage_value) : Equipment{ name_value,slot_value, stat_value }, m_is_two_handed{ is_two_handed_value }, m_min_damage{ min_damage_value }, m_max_damage{ max_damage_value } {}
 };

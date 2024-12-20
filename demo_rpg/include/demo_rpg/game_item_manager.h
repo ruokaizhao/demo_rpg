@@ -5,7 +5,7 @@ class GameItemManager
 {
 public:
 	// Armor
-	static std::unique_ptr<GameItem> generate_item(std::string name_value, ArmorSlot slot_value, CoreStat stat_value)
+	static std::unique_ptr<GameItem> generate_item(std::string name_value, ArmorSlot slot_value, BaseStat stat_value)
 	{
 		std::unique_ptr<GameItem> item_ptr = std::unique_ptr<GameItem>{ new GameItem{ std::shared_ptr<Item>{ new Armor{ name_value, slot_value, stat_value } } } };
 
@@ -45,7 +45,7 @@ public:
 	}
 
 	// Weapon
-	static std::unique_ptr<GameItem> generate_item(std::string name_value, WeaponSlot slot_value, CoreStat stat_value, bool is_two_handed_value, DamageType min_damage_value, DamageType max_damage_value)
+	static std::unique_ptr<GameItem> generate_item(std::string name_value, WeaponSlot slot_value, BaseStat stat_value, bool is_two_handed_value, DamageType min_damage_value, DamageType max_damage_value)
 	{
 		std::unique_ptr<GameItem> item_ptr = std::unique_ptr<GameItem>{ new GameItem{ std::shared_ptr<Item>(new Weapon{name_value, slot_value, stat_value, is_two_handed_value, min_damage_value, max_damage_value}) } };
 
@@ -181,7 +181,7 @@ public:
 
 			if (potion->get_buff() != nullptr)
 			{
-				role.get_m_character_ptr()->add_buff(*(potion->get_buff()));
+				role.apply_buff(*(potion->get_buff()));
 			}
 
 			// If the hit point is full and the potion does not have a buff, the potion will not be used.

@@ -2,10 +2,10 @@
 #include "types.h"
 #include <string>
 
-class CoreStat
+class BaseStat
 {
 public:
-	explicit CoreStat(StatType strength_value = 0u,
+	explicit BaseStat(StatType strength_value = 0u,
 		StatType intelligence_value = 0u,
 		StatType agility_value = 0u,
 		StatType physical_defense_value = 0u,
@@ -17,7 +17,7 @@ public:
 		m_magic_resistance{ magic_resistance_value } {
 	}
 
-	CoreStat& operator+=(const CoreStat& rhs)
+	BaseStat& operator+=(const BaseStat& rhs)
 	{
 		m_strength += rhs.m_strength;
 		m_intelligence += rhs.m_intelligence;
@@ -28,7 +28,7 @@ public:
 		return *this;
 	}
 
-	CoreStat& operator-=(const CoreStat& rhs)
+	BaseStat& operator-=(const BaseStat& rhs)
 	{
 		m_strength -= rhs.m_strength;
 		m_intelligence -= rhs.m_intelligence;

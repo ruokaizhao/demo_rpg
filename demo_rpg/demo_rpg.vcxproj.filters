@@ -26,9 +26,6 @@
     <ClInclude Include="include\demo_rpg\role.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\demo_rpg\stat.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\demo_rpg\ability.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -38,7 +35,7 @@
     <ClInclude Include="include\demo_rpg\types.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\demo_rpg\core_stat.h">
+    <ClInclude Include="include\demo_rpg\base_stat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\demo_rpg\game_item.h">
