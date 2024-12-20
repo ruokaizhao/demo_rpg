@@ -20,37 +20,37 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="point_pool.h">
+    <ClInclude Include="include\demo_rpg\point_pool.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="role.h">
+    <ClInclude Include="include\demo_rpg\role.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="stat.h">
+    <ClInclude Include="include\demo_rpg\stat.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ability.h">
+    <ClInclude Include="include\demo_rpg\ability.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="buff.h">
+    <ClInclude Include="include\demo_rpg\buff.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="types.h">
+    <ClInclude Include="include\demo_rpg\types.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="core_stat.h">
+    <ClInclude Include="include\demo_rpg\core_stat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="item.h">
+    <ClInclude Include="include\demo_rpg\game_item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="character.h">
+    <ClInclude Include="include\demo_rpg\character.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="equipment.h">
+    <ClInclude Include="include\demo_rpg\item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="item_manager.h">
+    <ClInclude Include="include\demo_rpg\game_item_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
