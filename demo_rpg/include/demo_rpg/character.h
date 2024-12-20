@@ -1,39 +1,39 @@
 #pragma once
 #include "ability.h"
-#include "item.h"
+#include "game_item.h"
 #include "point_pool.h"
 #include "stat.h"
 
-#define SET_UP_CHARACTER                \
+#define SET_UP_CHARACTER                                     \
 	get_hit_point()->set_max_point(BASE_HIT_POINT);          \
 	get_hit_point()->increase_current_point(BASE_HIT_POINT); \
 	increase_stat(BASE_STRENGTH, BASE_INTELLIGENCE, BASE_AGILITY)
-#define LEVEL_UP                                                                                                                          \
+#define LEVEL_UP                                                                                                                        \
 	get_hit_point()->set_max_point(get_hit_point()->get_max_point() + static_cast<PointPoolType>((BASE_HIT_POINT + 1u) / 2.0f));        \
 	get_hit_point()->increase_current_point(static_cast<PointPoolType>((BASE_HIT_POINT + 1u) / 2.0f));                                  \
-	if (get_mana_point() != nullptr)                                                                                                      \
-	{                                                                                                                                     \
+	if (get_mana_point() != nullptr)                                                                                                    \
+	{                                                                                                                                   \
 		get_mana_point()->set_max_point(get_mana_point()->get_max_point() + static_cast<PointPoolType>((BASE_MANA_POINT + 1u) / 2.0f)); \
 		get_mana_point()->increase_current_point(static_cast<PointPoolType>((BASE_MANA_POINT + 1u) / 2.0f));                            \
-	}                                                                                                                                     \
-	increase_stat(static_cast<StatType>((BASE_STRENGTH + 1u) / 2.0f),                                                                    \
-				   static_cast<StatType>((BASE_INTELLIGENCE + 1u) / 2.0f),                                                               \
-				   static_cast<StatType>((BASE_AGILITY + 1u) / 2.0f))
+	}                                                                                                                                   \
+	increase_stat(static_cast<StatType>((BASE_STRENGTH + 1u) / 2.0f),                                                                   \
+				  static_cast<StatType>((BASE_INTELLIGENCE + 1u) / 2.0f),                                                               \
+				  static_cast<StatType>((BASE_AGILITY + 1u) / 2.0f))
 
-
-class CharacterDelegate : public Stat
+class Character : public Stat
 {
 	static constexpr LevelType LEVEL_UP_SCALAR = 2u;
 	static constexpr ExperienceType EXPERIENCE_TILL_LEVEL_TWO = 100u;
 
 public:
-	CharacterDelegate()
+	Character()
 		: Stat{ 0u, 0u, 0u },
 		m_current_level{ 1u },
 		m_current_experience{ 0u },
 		m_experience_till_next_level{ EXPERIENCE_TILL_LEVEL_TWO },
 		m_hit_point{ std::make_unique<PointPool>() },
-		m_abilities{} {}
+		m_abilities{} {
+	}
 
 	LevelType get_current_level() const
 	{
@@ -69,7 +69,9 @@ public:
 	{
 		m_current_experience += experience_value;
 
-		while (check_if_leveled()) {}
+		while (check_if_leveled())
+		{
+		}
 	}
 
 	void add_buff(const Buff& buff)
@@ -77,7 +79,7 @@ public:
 		apply_buff(buff);
 	}
 
-	virtual ~CharacterDelegate() = default;
+	virtual ~Character() = default;
 	virtual std::string get_class_name() const = 0;
 	virtual void level_up() = 0;
 
@@ -105,7 +107,7 @@ private:
 	}
 };
 
-class Cleric : public CharacterDelegate
+class Cleric : public Character
 {
 public:
 	static constexpr PointPoolType BASE_HIT_POINT = static_cast<PointPoolType>(14u);
@@ -114,7 +116,7 @@ public:
 	static constexpr StatType BASE_INTELLIGENCE = static_cast<StatType>(5u);
 	static constexpr StatType BASE_AGILITY = static_cast<StatType>(1u);
 
-	Cleric() : CharacterDelegate{}
+	Cleric() : Character{}
 	{
 		get_mana_point() = std::make_unique<PointPool>(BASE_MANA_POINT, BASE_MANA_POINT);
 
@@ -140,7 +142,7 @@ private:
 	}
 };
 
-class Rogue : public CharacterDelegate
+class Rogue : public Character
 {
 public:
 	static constexpr PointPoolType BASE_HIT_POINT = static_cast<PointPoolType>(12u);
@@ -149,7 +151,7 @@ public:
 	static constexpr StatType BASE_INTELLIGENCE = static_cast<StatType>(3u);
 	static constexpr StatType BASE_AGILITY = static_cast<StatType>(5u);
 
-	Rogue() : CharacterDelegate{}
+	Rogue() : Character{}
 	{
 		SET_UP_CHARACTER;
 	}
@@ -166,7 +168,7 @@ private:
 	}
 };
 
-class Warrior : public CharacterDelegate
+class Warrior : public Character
 {
 public:
 	static constexpr PointPoolType BASE_HIT_POINT = static_cast<PointPoolType>(18u);
@@ -175,7 +177,7 @@ public:
 	static constexpr StatType BASE_INTELLIGENCE = static_cast<StatType>(2u);
 	static constexpr StatType BASE_AGILITY = static_cast<StatType>(2u);
 
-	Warrior() : CharacterDelegate{}
+	Warrior() : Character{}
 	{
 		SET_UP_CHARACTER;
 	}
@@ -197,7 +199,7 @@ private:
 	}
 };
 
-class Wizard : public CharacterDelegate
+class Wizard : public Character
 {
 public:
 	static constexpr PointPoolType BASE_HIT_POINT = static_cast<PointPoolType>(10u);
@@ -206,7 +208,7 @@ public:
 	static constexpr StatType BASE_INTELLIGENCE = static_cast<StatType>(8u);
 	static constexpr StatType BASE_AGILITY = static_cast<StatType>(2u);
 
-	Wizard() : CharacterDelegate{}
+	Wizard() : Character{}
 	{
 		get_mana_point() = std::make_unique<PointPool>(BASE_MANA_POINT, BASE_MANA_POINT);
 

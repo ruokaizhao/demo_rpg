@@ -45,30 +45,29 @@ public:
 
 	StatType get_total_strength() const
 	{
-		return m_base.m_strength + m_stat_from_buffs.m_strength;
+		return m_base.m_strength + m_stat_from_buffs.m_strength < 0 ? 0 : m_base.m_strength + m_stat_from_buffs.m_strength;
 	}
 
 	StatType get_total_intelligence() const
 	{
-		return m_base.m_intelligence + m_stat_from_buffs.m_intelligence;
+		return m_base.m_intelligence + m_stat_from_buffs.m_intelligence < 0 ? 0 : m_base.m_intelligence + m_stat_from_buffs.m_intelligence;
 	}
 
 	StatType get_total_agility() const
 	{
-		return m_base.m_agility + m_stat_from_buffs.m_agility;
+		return m_base.m_agility + m_stat_from_buffs.m_agility < 0 ? 0 : m_base.m_agility + m_stat_from_buffs.m_agility;
 	}
 
 	StatType get_total_physical_defense() const
 	{
-		return m_base.m_physical_defense + m_stat_from_buffs.m_physical_defense;
+		return m_base.m_physical_defense + m_stat_from_buffs.m_physical_defense < 0 ? 0 : m_base.m_physical_defense + m_stat_from_buffs.m_physical_defense;
 	}
 
 	StatType get_total_magic_resistance() const
 	{
-		return m_base.m_magic_resistance + m_stat_from_buffs.m_magic_resistance;
+		return m_base.m_magic_resistance + m_stat_from_buffs.m_magic_resistance < 0 ? 0 : m_base.m_magic_resistance + m_stat_from_buffs.m_magic_resistance;
 	}
 
-protected:
 	void apply_buff(const Buff& buff_value)
 	{
 		for (auto& buff : m_buffs)
@@ -76,9 +75,9 @@ protected:
 			if (buff.m_name == buff_value.m_name)
 			{
 				buff.m_duration = buff_value.m_duration;
-			}
 
-			return;
+				return;
+			}
 		}
 
 		m_buffs.push_back(buff_value);
@@ -100,7 +99,7 @@ protected:
 		m_base += stats_value;
 	}
 
-private:
+public:
 	CoreStat m_base{};
 	CoreStat m_stat_from_buffs{};
 	std::vector<Buff> m_buffs{};

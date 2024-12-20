@@ -14,7 +14,8 @@ public:
 		m_intelligence{ intelligence_value },
 		m_agility{ agility_value },
 		m_physical_defense{ physical_defense_value },
-		m_magic_resistance{ magic_resistance_value } {}
+		m_magic_resistance{ magic_resistance_value } {
+	}
 
 	CoreStat& operator+=(const CoreStat& rhs)
 	{

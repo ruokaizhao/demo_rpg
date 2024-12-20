@@ -7,20 +7,20 @@
 // But template implementations need to be written in the header file, not a separate source file, so this has to be moved to the header file.
 static IdType s_id_generator = 0u;
 
-class ItemDelegate
+class Item
 {
 public:
-	ItemDelegate(std::string name_value) : m_name{ name_value } {}
-	virtual ~ItemDelegate() = default;
+	Item(std::string name_value) : m_name{ name_value } {}
+	virtual ~Item() = default;
 
 	virtual const std::string& get_name() const = 0;
 protected:
 	std::string m_name;
 };
 
-class Potion final : public ItemDelegate
+class Potion final : public Item
 {
-	friend class ItemManager;
+	friend class GameItemManager;
 public:
 	~Potion() override = default;
 
@@ -53,16 +53,16 @@ private:
 	PointPoolType m_hit_point;
 	std::unique_ptr<Buff> m_buff;
 
-	Potion(std::string name_value, PointPoolType hit_point_value, ItemCountType count_value, std::unique_ptr<Buff> buff_value) : ItemDelegate{ name_value }, m_hit_point{ hit_point_value }, m_count{ count_value }, m_buff{ std::move(buff_value) } {}
+	Potion(std::string name_value, PointPoolType hit_point_value, ItemCountType count_value, std::unique_ptr<Buff> buff_value) : Item{ name_value }, m_hit_point{ hit_point_value }, m_count{ count_value }, m_buff{ std::move(buff_value) } {}
 };
 
 template <typename T>
-class EquipmentDelegate : public ItemDelegate
+class Equipment : public Item
 {
 public:
-	EquipmentDelegate(std::string name_value, T slot_value, CoreStat stat_value) : ItemDelegate{ name_value }, m_slot{ slot_value }, m_stat{ stat_value }, m_id{ ++s_id_generator } {}
+	Equipment(std::string name_value, T slot_value, CoreStat stat_value) : Item{ name_value }, m_slot{ slot_value }, m_stat{ stat_value }, m_id{ ++s_id_generator } {}
 
-	virtual ~EquipmentDelegate() = default;
+	virtual ~Equipment() = default;
 
 	const T& get_slot() const
 	{
@@ -81,9 +81,9 @@ private:
 	CoreStat m_stat;
 };
 
-class Armor final : public EquipmentDelegate<ArmorSlot>
+class Armor final : public Equipment<ArmorSlot>
 {
-	friend class ItemManager;
+	friend class GameItemManager;
 public:
 	~Armor() override = default;
 
@@ -97,12 +97,12 @@ public:
 	Armor(Armor&&) = delete;
 
 private:
-	Armor(std::string name_value, ArmorSlot slot_value, CoreStat stat_value) : EquipmentDelegate{ name_value,slot_value, stat_value } {}
+	Armor(std::string name_value, ArmorSlot slot_value, CoreStat stat_value) : Equipment{ name_value,slot_value, stat_value } {}
 };
 
-class Weapon final : public EquipmentDelegate<WeaponSlot>
+class Weapon final : public Equipment<WeaponSlot>
 {
-	friend class ItemManager;
+	friend class GameItemManager;
 public:
 	~Weapon() override = default;
 
@@ -120,5 +120,5 @@ public:
 	Weapon(Weapon&&) = delete;
 
 private:
-	Weapon(std::string name_value, WeaponSlot slot_value, CoreStat stat_value, bool is_two_handed_value, DamageType min_damage_value, DamageType max_damage_value) : EquipmentDelegate{ name_value,slot_value, stat_value }, m_is_two_handed{ is_two_handed_value }, m_min_damage{ min_damage_value }, m_max_damage{ max_damage_value } {}
+	Weapon(std::string name_value, WeaponSlot slot_value, CoreStat stat_value, bool is_two_handed_value, DamageType min_damage_value, DamageType max_damage_value) : Equipment{ name_value,slot_value, stat_value }, m_is_two_handed{ is_two_handed_value }, m_min_damage{ min_damage_value }, m_max_damage{ max_damage_value } {}
 };
