@@ -2,6 +2,7 @@
 #include "character.h"
 #include <array>
 #include <algorithm>
+#include "utils.h"
 
 class Role
 {
@@ -23,9 +24,8 @@ public:
 		{
 			if (item != nullptr)
 			{
-				auto equipment = std::unique_ptr<Equipment<ArmorSlot>>(static_cast<Equipment<ArmorSlot>*>(item->get_m_item_ptr().get()));
+				auto equipment = std::shared_ptr<Equipment<ArmorSlot>>{ item->get_m_item_ptr(), static_cast<Equipment<ArmorSlot>*>(item->get_m_item_ptr().get()) };
 				total_strength_from_armors += equipment->get_stat().m_strength;
-				equipment.release();
 			}
 		}
 
@@ -34,9 +34,8 @@ public:
 		{
 			if (item != nullptr)
 			{
-				auto equipment = std::unique_ptr<Equipment<WeaponSlot>>(static_cast<Equipment<WeaponSlot>*>(item->get_m_item_ptr().get()));
+				auto equipment = std::shared_ptr<Equipment<WeaponSlot>>{ item->get_m_item_ptr(), static_cast<Equipment<WeaponSlot>*>(item->get_m_item_ptr().get()) };
 				total_strength_from_weapons += equipment->get_stat().m_strength;
-				equipment.release();
 			}
 		}
 
@@ -52,9 +51,8 @@ public:
 		{
 			if (item != nullptr)
 			{
-				auto equipment = std::unique_ptr<Equipment<ArmorSlot>>(static_cast<Equipment<ArmorSlot>*>(item->get_m_item_ptr().get()));
+				auto equipment = std::shared_ptr<Equipment<ArmorSlot>>{ item->get_m_item_ptr(), static_cast<Equipment<ArmorSlot>*>(item->get_m_item_ptr().get()) };
 				total_intelligence_from_armors += equipment->get_stat().m_intelligence;
-				equipment.release();
 			}
 		}
 
@@ -63,9 +61,8 @@ public:
 		{
 			if (item != nullptr)
 			{
-				auto equipment = std::unique_ptr<Equipment<WeaponSlot>>(static_cast<Equipment<WeaponSlot>*>(item->get_m_item_ptr().get()));
+				auto equipment = std::shared_ptr<Equipment<WeaponSlot>>{ item->get_m_item_ptr(), static_cast<Equipment<WeaponSlot>*>(item->get_m_item_ptr().get()) };
 				total_intelligence_from_weapons += equipment->get_stat().m_intelligence;
-				equipment.release();
 			}
 		}
 
@@ -81,9 +78,8 @@ public:
 		{
 			if (item != nullptr)
 			{
-				auto equipment = std::unique_ptr<Equipment<ArmorSlot>>(static_cast<Equipment<ArmorSlot>*>(item->get_m_item_ptr().get()));
+				auto equipment = std::shared_ptr<Equipment<ArmorSlot>>{ item->get_m_item_ptr(), static_cast<Equipment<ArmorSlot>*>(item->get_m_item_ptr().get()) };
 				total_agility_from_armors += equipment->get_stat().m_agility;
-				equipment.release();
 			}
 		}
 
@@ -92,9 +88,8 @@ public:
 		{
 			if (item != nullptr)
 			{
-				auto equipment = std::unique_ptr<Equipment<WeaponSlot>>(static_cast<Equipment<WeaponSlot>*>(item->get_m_item_ptr().get()));
+				auto equipment = std::shared_ptr<Equipment<WeaponSlot>>{ item->get_m_item_ptr(), static_cast<Equipment<WeaponSlot>*>(item->get_m_item_ptr().get()) };
 				total_agility_from_weapons += equipment->get_stat().m_agility;
-				equipment.release();
 			}
 		}
 
@@ -110,9 +105,8 @@ public:
 		{
 			if (item != nullptr)
 			{
-				auto equipment = std::unique_ptr<Equipment<ArmorSlot>>(static_cast<Equipment<ArmorSlot>*>(item->get_m_item_ptr().get()));
+				auto equipment = std::shared_ptr<Equipment<ArmorSlot>>{ item->get_m_item_ptr(), static_cast<Equipment<ArmorSlot>*>(item->get_m_item_ptr().get()) };
 				total_physical_defense_from_armors += equipment->get_stat().m_physical_defense;
-				equipment.release();
 			}
 		}
 
@@ -121,9 +115,8 @@ public:
 		{
 			if (item != nullptr)
 			{
-				auto equipment = std::unique_ptr<Equipment<WeaponSlot>>(static_cast<Equipment<WeaponSlot>*>(item->get_m_item_ptr().get()));
+				auto equipment = std::shared_ptr<Equipment<WeaponSlot>>{ item->get_m_item_ptr(), static_cast<Equipment<WeaponSlot>*>(item->get_m_item_ptr().get()) };
 				total_physical_defense_from_weapons += equipment->get_stat().m_physical_defense;
-				equipment.release();
 			}
 		}
 
@@ -139,9 +132,8 @@ public:
 		{
 			if (item != nullptr)
 			{
-				auto equipment = std::unique_ptr<Equipment<ArmorSlot>>(static_cast<Equipment<ArmorSlot>*>(item->get_m_item_ptr().get()));
+				auto equipment = std::shared_ptr<Equipment<ArmorSlot>>{ item->get_m_item_ptr(), static_cast<Equipment<ArmorSlot>*>(item->get_m_item_ptr().get()) };
 				total_magic_resistance_from_armors += equipment->get_stat().m_magic_resistance;
-				equipment.release();
 			}
 		}
 
@@ -150,9 +142,8 @@ public:
 		{
 			if (item != nullptr)
 			{
-				auto equipment = std::unique_ptr<Equipment<WeaponSlot>>(static_cast<Equipment<WeaponSlot>*>(item->get_m_item_ptr().get()));
+				auto equipment = std::shared_ptr<Equipment<WeaponSlot>>{ item->get_m_item_ptr(), static_cast<Equipment<WeaponSlot>*>(item->get_m_item_ptr().get()) };
 				total_magic_resistance_from_weapons += equipment->get_stat().m_magic_resistance;
-				equipment.release();
 			}
 		}
 
@@ -161,32 +152,61 @@ public:
 		return total_magic_resistance < 0 ? 0 : total_magic_resistance;
 	}
 
-	auto& get_inventory()
+	const DamageType get_melee_damage() const
+	{
+		DamageType total_melee_damage = 0u;
+
+
+		if (get_weapon_at(WeaponSlot::melee) != nullptr && get_weapon_at(WeaponSlot::melee)->get_m_item_ptr() != nullptr)
+		{
+			auto equipment = std::shared_ptr<Weapon>{ get_weapon_at(WeaponSlot::melee)->get_m_item_ptr(), static_cast<Weapon*>(get_weapon_at(WeaponSlot::melee)->get_m_item_ptr().get()) };
+
+			total_melee_damage += Random::random(equipment->get_min_damage(), equipment->get_max_damage());
+		}
+
+		return total_melee_damage += (get_total_strength() / 2u);
+	}
+
+	const DamageType get_ranged_damage() const
+	{
+		DamageType total_ranged_damage = 0u;
+
+		if (get_weapon_at(WeaponSlot::ranged) != nullptr && get_weapon_at(WeaponSlot::ranged)->get_m_item_ptr() != nullptr)
+		{
+			auto equipment = std::shared_ptr<Weapon>{ get_weapon_at(WeaponSlot::ranged)->get_m_item_ptr(), static_cast<Weapon*>(get_weapon_at(WeaponSlot::ranged)->get_m_item_ptr().get()) };
+
+			total_ranged_damage += Random::random(equipment->get_min_damage(), equipment->get_max_damage());
+		}
+
+		return total_ranged_damage += (get_total_agility() / 2u);
+	}
+
+	std::vector<std::unique_ptr<GameItem>>& get_inventory()
 	{
 		return m_inventory;
 	}
 
-	const auto& get_armors() const
+	const std::array<std::unique_ptr<GameItem>, static_cast<size_t>(ArmorSlot::number_of_slots)>& get_armors() const
 	{
 		return m_armors;
 	}
 
-	const auto& get_weapons() const
+	const std::array<std::unique_ptr<GameItem>, static_cast<size_t>(WeaponSlot::number_of_slots)>& get_weapons() const
 	{
 		return m_weapons;
 	}
 
-	const auto& get_armor_at(ArmorSlot slot) const
+	const std::unique_ptr<GameItem>& get_armor_at(ArmorSlot slot) const
 	{
 		return m_armors.at(static_cast<size_t>(slot));
 	}
 
-	const auto& get_weapon_at(WeaponSlot slot) const
+	const std::unique_ptr<GameItem>& get_weapon_at(WeaponSlot slot) const
 	{
 		return m_weapons.at(static_cast<size_t>(slot));
 	}
 
-	const auto& get_m_buffs() const
+	const std::vector<Buff>& get_m_buffs() const
 	{
 		return m_buffs;
 	}

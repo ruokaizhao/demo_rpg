@@ -11,7 +11,7 @@ typedef std::uint16_t LevelType;
 
 typedef std::uint64_t ExperienceType;
 
-typedef std::uint16_t PointPoolType;
+typedef std::uint64_t PointPoolType;
 
 typedef std::int16_t StatType;
 
