@@ -37,7 +37,7 @@ public:
 		if (is_item_armor(item))
 		{
 			// dynamic_pointer_cast will increase the reference count.
-			//return std::dynamic_pointer_cast<Armor>(item->get_m_item_delegate_ptr());
+			// return std::dynamic_pointer_cast<Armor>(item->get_m_item_delegate_ptr());
 			return std::shared_ptr<Armor>{item->get_m_item_ptr(), static_cast<Armor*>(item->get_m_item_ptr().get())};
 		}
 
@@ -141,7 +141,6 @@ public:
 				add_to_inventory(role, role.m_armors.at(static_cast<size_t>(equipment->get_slot())));
 				role.m_armors.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
 			}
-			// Objects pointed by equipment and armor are still needed, so we need to prevent them being deleted by the smart pointers by releasing the smart pointers.
 
 			return true;
 		}
@@ -159,7 +158,8 @@ public:
 				add_to_inventory(role, role.m_weapons.at(static_cast<size_t>(equipment->get_slot())));
 				role.m_weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
 			}
-			// After using shared_ptr instead of unique_ptr, we don't need to release the smart pointers here.
+			// Objects pointed by equipment and armor are still needed, so we need to prevent them being deleted by the smart pointers by releasing the smart pointers.
+			// However, after using shared_ptr instead of unique_ptr, we don't need to release the smart pointers here.
 			// equipment.release();
 
 			return true;

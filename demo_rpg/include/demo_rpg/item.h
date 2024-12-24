@@ -106,9 +106,20 @@ class Weapon final : public Equipment<WeaponSlot>
 public:
 	~Weapon() override = default;
 
-	bool m_is_two_handed;
-	DamageType m_min_damage;
-	DamageType m_max_damage;
+	DamageType get_min_damage() const
+	{
+		return m_min_damage;
+	}
+
+	DamageType get_max_damage() const
+	{
+		return m_max_damage;
+	}
+
+	bool is_two_handed() const
+	{
+		return m_is_two_handed;
+	}
 
 	const std::string& get_name() const override
 	{
@@ -120,5 +131,9 @@ public:
 	Weapon(Weapon&&) = delete;
 
 private:
+	bool m_is_two_handed;
+	DamageType m_min_damage;
+	DamageType m_max_damage;
+
 	Weapon(std::string name_value, WeaponSlot slot_value, BaseStat stat_value, bool is_two_handed_value, DamageType min_damage_value, DamageType max_damage_value) : Equipment{ name_value,slot_value, stat_value }, m_is_two_handed{ is_two_handed_value }, m_min_damage{ min_damage_value }, m_max_damage{ max_damage_value } {}
 };
