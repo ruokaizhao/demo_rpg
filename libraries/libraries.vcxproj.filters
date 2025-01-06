@@ -15,40 +15,40 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\demo_rpg\point_pool.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\demo_rpg\role.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\demo_rpg\ability.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\demo_rpg\buff.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\demo_rpg\types.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\demo_rpg\base_stat.h">
+    <ClInclude Include="ability.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\demo_rpg\game_item.h">
+    <ClInclude Include="base_stat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\demo_rpg\character.h">
+    <ClInclude Include="buff.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\demo_rpg\item.h">
+    <ClInclude Include="character.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\demo_rpg\game_item_manager.h">
+    <ClInclude Include="game_item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\demo_rpg\monster.h">
+    <ClInclude Include="game_item_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\demo_rpg\utils.h">
+    <ClInclude Include="item.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="monster.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="point_pool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="role.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

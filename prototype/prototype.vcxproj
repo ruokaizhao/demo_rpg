@@ -24,6 +24,7 @@
     <ProjectGuid>{3907972d-8ba8-4319-9639-d42659596685}</ProjectGuid>
     <RootNamespace>demorpgprototype</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>prototype</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -71,16 +72,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)demo_rpg\include\demo_rpg;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libraries;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)demo_rpg\include\demo_rpg;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libraries;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)demo_rpg\include\demo_rpg;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libraries;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)demo_rpg\include\demo_rpg;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libraries;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

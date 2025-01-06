@@ -24,6 +24,7 @@
     <ProjectGuid>{6d672daf-faca-4004-82f4-43fe3330ff12}</ProjectGuid>
     <RootNamespace>demorpg</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>libraries</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -127,18 +128,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\demo_rpg\ability.h" />
-    <ClInclude Include="include\demo_rpg\buff.h" />
-    <ClInclude Include="include\demo_rpg\character.h" />
-    <ClInclude Include="include\demo_rpg\base_stat.h" />
-    <ClInclude Include="include\demo_rpg\item.h" />
-    <ClInclude Include="include\demo_rpg\game_item.h" />
-    <ClInclude Include="include\demo_rpg\game_item_manager.h" />
-    <ClInclude Include="include\demo_rpg\monster.h" />
-    <ClInclude Include="include\demo_rpg\point_pool.h" />
-    <ClInclude Include="include\demo_rpg\role.h" />
-    <ClInclude Include="include\demo_rpg\types.h" />
-    <ClInclude Include="include\demo_rpg\utils.h" />
+    <ClInclude Include="ability.h" />
+    <ClInclude Include="base_stat.h" />
+    <ClInclude Include="buff.h" />
+    <ClInclude Include="character.h" />
+    <ClInclude Include="game_item.h" />
+    <ClInclude Include="game_item_manager.h" />
+    <ClInclude Include="item.h" />
+    <ClInclude Include="monster.h" />
+    <ClInclude Include="point_pool.h" />
+    <ClInclude Include="role.h" />
+    <ClInclude Include="types.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
