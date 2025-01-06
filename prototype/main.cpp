@@ -3,6 +3,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "world_map.h"
+#include "warrior.h"
 
 static void show_map()
 {

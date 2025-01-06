@@ -1,5 +1,5 @@
 #pragma once
-#include "character.h"
+#include "include_class.h"
 #include <array>
 #include <algorithm>
 #include "utils.h"

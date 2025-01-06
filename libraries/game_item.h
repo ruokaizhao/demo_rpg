@@ -1,6 +1,5 @@
 #pragma once
 #include "item.h"
-#include <ostream>
 
 class GameItem
 {

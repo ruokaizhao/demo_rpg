@@ -1,7 +1,6 @@
 #pragma once
 #include "buff.h"
 #include <memory>
-#include <string>
 
 // Do not want other people to change this value, so it is placed in the cpp file, and since the constructor needs to read s_id_generator, it is placed in the cpp file as well.
 // But template implementations need to be written in the header file, not a separate source file, so this has to be moved to the header file.
