@@ -5,19 +5,30 @@
 
 namespace Random
 {
-	DamageType random(DamageType min_damage_value, DamageType max_damage_value)
+	static uint64_t time_seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+
+	static std::seed_seq ss{ uint32_t(time_seed & 0xffffffff), uint32_t(time_seed >> 32) };
+
+	static std::mt19937 gen{ ss };
+
+	std::uint64_t random(std::uint64_t floor, std::uint64_t ceiling)
 	{
-		if (min_damage_value > max_damage_value) {
-			std::swap(min_damage_value, max_damage_value);
+		if (floor > ceiling) {
+			std::swap(floor, ceiling);
 		}
 
-		static uint64_t time_seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+		std::uniform_int_distribution<uint64_t> dist{ floor, ceiling };
 
-		static std::seed_seq ss{ uint32_t(time_seed & 0xffffffff), uint32_t(time_seed >> 32) };
+		return dist(gen);
+	}
 
-		static std::mt19937 gen{ ss };
+	int random(int floor, int ceiling)
+	{
+		if (floor > ceiling) {
+			std::swap(floor, ceiling);
+		}
 
-		std::uniform_int_distribution<uint64_t> dist{ min_damage_value, max_damage_value };
+		std::uniform_int_distribution<int> dist{ floor, ceiling };
 
 		return dist(gen);
 	}

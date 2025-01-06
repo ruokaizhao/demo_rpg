@@ -8,7 +8,7 @@ class Role
 {
 	friend class GameItemManager;
 public:
-	Role(std::unique_ptr<Character> character_ptr_value) : m_character_ptr{ std::move(character_ptr_value) } {}
+	Role(std::unique_ptr<Character>& character_ptr_value) : m_character_ptr{ std::move(character_ptr_value) } {}
 
 	~Role() = default;
 
