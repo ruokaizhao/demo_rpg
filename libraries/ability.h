@@ -15,7 +15,7 @@ struct Ability
 		AbilityType cost_value = 0u,
 		AbilityType cooldown_value = 1u,
 		AbilityType hit_point_effect_value = 1u,
-		AbilityTarget target_value = AbilityTarget::SELF,
+		AbilityTarget target_value = AbilityTarget::self,
 		AbilityScalar scalar_value = AbilityScalar::none)
 		: m_name{ name_value },
 		m_cost{ cost_value },

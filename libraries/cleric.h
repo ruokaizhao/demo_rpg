@@ -16,7 +16,7 @@ public:
 
 		SET_UP_CHARACTER;
 
-		get_abilities().emplace_back("Heal", 2u, 1u, 2u, AbilityTarget::ALLY, AbilityScalar::intelligence);
+		get_abilities().emplace_back("Heal", 2u, 1u, 2u, AbilityTarget::ally, AbilityScalar::intelligence);
 	}
 
 	std::string get_class_name() const override
@@ -31,7 +31,7 @@ private:
 
 		if (get_current_level() == 2)
 		{
-			get_abilities().emplace_back("Smite", 2u, 1u, 2u, AbilityTarget::ENEMY, AbilityScalar::intelligence);
+			get_abilities().emplace_back("Smite", 2u, 1u, 2u, AbilityTarget::enemy, AbilityScalar::intelligence);
 		}
 	}
 };

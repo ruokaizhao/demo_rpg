@@ -16,7 +16,7 @@ public:
 
 		SET_UP_CHARACTER;
 
-		get_abilities().emplace_back("Fireball", 2u, 1u, 4u, AbilityTarget::ENEMY, AbilityScalar::intelligence);
+		get_abilities().emplace_back("Fireball", 2u, 1u, 4u, AbilityTarget::enemy, AbilityScalar::intelligence);
 	}
 
 	std::string get_class_name() const override
@@ -31,7 +31,7 @@ private:
 
 		if (get_current_level() == 2)
 		{
-			get_abilities().emplace_back("Icebolt", 3u, 1u, 6u, AbilityTarget::ENEMY, AbilityScalar::intelligence);
+			get_abilities().emplace_back("Icebolt", 3u, 1u, 6u, AbilityTarget::enemy, AbilityScalar::intelligence);
 		}
 	}
 };

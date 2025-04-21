@@ -36,8 +36,11 @@ public:
 
 		if (is_item_armor(item))
 		{
-			// dynamic_pointer_cast will increase the reference count.
-			// return std::dynamic_pointer_cast<Armor>(item->get_m_item_delegate_ptr());
+			// If you're just trying to convert a shared_ptr<Base> to a shared_ptr<Derived>, and the actual object is of the correct type (Armor), then yes ¡ª dynamic_pointer_cast can work just fine.
+			// The base class has at least one virtual function (so RTTI is available).
+			// The object is really of the derived type
+			// You cannot use dynamic_pointer_cast to point to a subobject, member field, or an alias view (like you can with aliasing).
+			// return std::dynamic_pointer_cast<Armor>(item->get_m_item_ptr());
 			return std::shared_ptr<Armor>{item->get_m_item_ptr(), static_cast<Armor*>(item->get_m_item_ptr().get())};
 		}
 
@@ -225,6 +228,6 @@ public:
 
 	static void cleanup_inventory(Role& role)
 	{
-		role.m_inventory.erase(std::remove_if(role.m_inventory.begin(), role.m_inventory.end(), [](const std::unique_ptr<GameItem>& item) {return item->is_marked_for_deletion(); }), role.m_inventory.end());
+		role.m_inventory.erase(std::remove_if(role.m_inventory.begin(), role.m_inventory.end(), [](const std::unique_ptr<GameItem>& item) -> bool {return item->is_marked_for_deletion(); }), role.m_inventory.end());
 	}
 };

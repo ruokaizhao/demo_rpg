@@ -21,22 +21,22 @@ static void show_map()
 
 static void create_enemy(std::unique_ptr<Enemy>& enemy, const std::unique_ptr<Player>& player)
 {
-	if (!enemy)
+	if (enemy)
 	{
-		enemy.release();
+		world_map.at(enemy->m_x_position).at(enemy->m_y_position) = ' ';
 	}
 
 	PointPoolType min_hit_point = player->m_role_ptr->get_m_character_ptr()->get_current_level();
-	PointPoolType max_hit_point = static_cast<PointPoolType>(player->m_role_ptr->get_m_character_ptr()->get_current_level()) * 2;
+	PointPoolType max_hit_point = static_cast<PointPoolType>(player->m_role_ptr->get_m_character_ptr()->get_current_level()) * 10;
 
 	std::unique_ptr<PointPool> monster_point_pool_ptr = std::make_unique<PointPool>(Random::random(min_hit_point, max_hit_point), Random::random(min_hit_point, max_hit_point));
 
 	DamageType min_damage = player->m_role_ptr->get_m_character_ptr()->get_current_level();
-	DamageType max_damage = static_cast<DamageType>(player->m_role_ptr->get_m_character_ptr()->get_current_level()) * 2;
+	DamageType max_damage = static_cast<DamageType>(player->m_role_ptr->get_m_character_ptr()->get_current_level()) * 5;
 
 	std::unique_ptr<Monster> monster_ptr = std::make_unique<Monster>(monster_point_pool_ptr, min_damage, max_damage);
 
-	ExperienceType experience = static_cast<ExperienceType>(player->m_role_ptr->get_m_character_ptr()->get_current_level()) * 50;
+	ExperienceType experience = static_cast<ExperienceType>(player->m_role_ptr->get_m_character_ptr()->get_current_level()) * 1000000;
 
 
 	int m_x_position = Random::random(1, 11);
@@ -59,19 +59,40 @@ static void enter_battle(std::unique_ptr<Player>& player, std::unique_ptr<Enemy>
 	{
 		system("cls");
 
-		std::cout << std::setw(10) << std::left << "" << "Player vs. Enemy" << '\n'
-			<< "Player: " 
-			<< player->m_role_ptr->get_m_character_ptr()->get_hit_point()->get_current_point() 
-			<< "/" 
+		std::cout << std::setw(30) << std::left << "" << "Player vs. Enemy" << '\n' << '\n'
+			<< std::setw(10) << std::left
+			<< "Player: "
+			<< std::setw(50) << std::left << ""
+			<< "Enemy: "
+			<< '\n'
+			<< std::setw(7) << std::left
+			<< "Class: "
+			<< std::setw(10) << std::left
+			<< player->m_role_ptr->get_m_character_ptr()->get_class_name()
+			<< std::setw(7) << std::left
+			<< "Level: "
+			<< std::setw(5) << std::left
+			<< player->m_role_ptr->get_m_character_ptr()->get_current_level()
+			<< std::setw(4) << std::left
+			<< "HP: "
+			<< std::setw(3) << std::left
+			<< player->m_role_ptr->get_m_character_ptr()->get_hit_point()->get_current_point()
+			<< std::setw(1) << std::left
+			<< "/"
+			<< std::setw(3) << std::right
 			<< player->m_role_ptr->get_m_character_ptr()->get_hit_point()->get_max_point()
-			<< std::setw(10) << std::left << "" 
-			<< "Enemy: " 
-			<< enemy->m_monster_ptr->get_hit_point()->get_current_point() 
-			<< "/" 
+			<< std::setw(20) << std::left << ""
+			<< std::setw(4) << std::left
+			<< "HP: "
+			<< std::setw(3) << std::left
+			<< enemy->m_monster_ptr->get_hit_point()->get_current_point()
+			<< std::setw(1) << std::left
+			<< "/"
+			<< std::setw(3) << std::right
 			<< enemy->m_monster_ptr->get_hit_point()->get_max_point()
 			<< '\n';
 
-		std::cout << '\n' << "Please make a selection: \n"
+		std::cout << '\n' << '\n' << "Please make a selection: \n"
 			<< "a. Attack\n"
 			<< '\n';
 
@@ -99,16 +120,18 @@ static void enter_battle(std::unique_ptr<Player>& player, std::unique_ptr<Enemy>
 	if (!player->is_alive())
 	{
 		std::cout << "You have died!" << '\n';
+		
 	}
 	else if (!enemy->is_alive())
 	{
 		player->m_role_ptr->get_m_character_ptr()->gain_experience(enemy->m_experience);
+		
 		std::cout << "You have defeated the enemy!" << '\n';
 		std::cout << "You have gained " << enemy->m_experience << " experiences!" << '\n';
 		std::cout << "Press any key to continue..." << '\n';
-	}
 
-	create_enemy(enemy, player);
+		create_enemy(enemy, player);
+	}
 
 	char input{};
 	std::cin >> input;
@@ -119,9 +142,21 @@ static void move_player_on_map(std::unique_ptr<Player>& player, std::unique_ptr<
 	if (world_map.at(player->m_x_position).at(player->m_y_position) == 'E')
 	{
 		enter_battle(player, enemy);
-	}
 
-	if (world_map.at(player->m_x_position).at(player->m_y_position) != 'x')
+		if (player->is_alive())
+		{
+			world_map.at(player->m_x_position).at(player->m_y_position) = 'P';
+			world_map.at(player->m_previous_x_position).at(player->m_previous_y_position) = ' ';
+
+			player->m_previous_x_position = player->m_x_position;
+			player->m_previous_y_position = player->m_y_position;
+		}
+		else
+		{
+			world_map.at(player->m_previous_x_position).at(player->m_previous_y_position) = ' ';
+		}
+	}	
+	else if (world_map.at(player->m_x_position).at(player->m_y_position) != 'x' && world_map.at(player->m_x_position).at(player->m_y_position) != 'P')
 	{
 		world_map.at(player->m_x_position).at(player->m_y_position) = 'P';
 		world_map.at(player->m_previous_x_position).at(player->m_previous_y_position) = ' ';
@@ -140,31 +175,71 @@ static void move_player_on_map(std::unique_ptr<Player>& player, std::unique_ptr<
 int main()
 {
 	std::unique_ptr<Enemy> enemy = nullptr;
+	std::unique_ptr<Character> character = nullptr;
+	
+	std::cout << " Please select your class:\n";
+	std::cout << " A: Warrior\n";
+	std::cout << " B: Rogue\n";
+	std::cout << " C: Wizard\n";
+	std::cout << " D: Cleric\n";
 
-	std::unique_ptr<Character> warrior_character = std::make_unique<Warrior>();
-	std::unique_ptr<Role> m_role_ptr = std::make_unique<Role>(warrior_character);
+	char selection{};
+	while (character == nullptr)
+	{	
+		std::cin >> selection;
+
+		switch (selection)
+		{
+		case 'a':
+		case 'A':
+			character = std::make_unique<Warrior>();
+			break;
+		case 'b':
+		case 'B':
+			character = std::make_unique<Rogue>();
+			break;
+		case 'c':
+		case 'C':
+			character = std::make_unique<Wizard>();
+			break;
+		case 'd':
+		case 'D':
+			character = std::make_unique<Cleric>();
+			break;
+		default:
+			std::cout << " Invalid input.\n";
+			break;
+		}
+	}
+	
+	std::unique_ptr<Role> m_role_ptr = std::make_unique<Role>(character);
 	std::unique_ptr<Player> player = std::make_unique<Player>(m_role_ptr);
 
 	create_enemy(enemy, player);
 	move_player_on_map(player, enemy);
-
 	show_map();
 
 	char direction{};
-	while (std::cin >> direction)
+	while (player->is_alive())
 	{
+		std::cin >> direction;
+
 		switch (direction)
 		{
 		case 'w':
+		case 'W':
 			player->m_x_position--;
 			break;
 		case 's':
+		case 'S':
 			player->m_x_position++;
 			break;
 		case 'a':
+		case 'A':
 			player->m_y_position--;
 			break;
 		case 'd':
+		case 'D':
 			player->m_y_position++;
 			break;
 		default:
@@ -174,4 +249,6 @@ int main()
 	move_player_on_map(player, enemy);
 	show_map();
 	}
+
+	return 0;
 }

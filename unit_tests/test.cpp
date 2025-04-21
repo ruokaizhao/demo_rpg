@@ -14,16 +14,16 @@ namespace DemoRPGUnitTests {
         EXPECT_EQ(0u, unnamed_ability.m_cost);
         EXPECT_EQ(1u, unnamed_ability.m_cooldown);
         EXPECT_EQ(1u, unnamed_ability.m_hit_point_effect);
-        EXPECT_EQ(AbilityTarget::SELF, unnamed_ability.m_target);
+        EXPECT_EQ(AbilityTarget::self, unnamed_ability.m_target);
         EXPECT_EQ(AbilityScalar::none, unnamed_ability.m_scalar);
 
-        Ability heal_ability{ "Heal", 1u, 2u, 3u, AbilityTarget::ALLY, AbilityScalar::intelligence };
+        Ability heal_ability{ "Heal", 1u, 2u, 3u, AbilityTarget::ally, AbilityScalar::intelligence };
 
         EXPECT_EQ("Heal", heal_ability.m_name);
         EXPECT_EQ(1u, heal_ability.m_cost);
         EXPECT_EQ(2u, heal_ability.m_cooldown);
         EXPECT_EQ(3u, heal_ability.m_hit_point_effect);
-        EXPECT_EQ(AbilityTarget::ALLY, heal_ability.m_target);
+        EXPECT_EQ(AbilityTarget::ally, heal_ability.m_target);
         EXPECT_EQ(AbilityScalar::intelligence, heal_ability.m_scalar);
     }
 

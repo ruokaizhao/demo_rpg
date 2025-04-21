@@ -23,7 +23,7 @@ typedef std::uint16_t ItemCountType;
 
 enum class AbilityTarget
 {
-	SELF, ALLY, ENEMY
+	self, ally, enemy
 };
 
 enum class AbilityScalar
