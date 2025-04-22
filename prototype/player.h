@@ -5,7 +5,7 @@
 class Player
 {
 public:
-	Player(std::unique_ptr<Role>& role_ptr_value) : m_role_ptr{ std::move(role_ptr_value) }, m_x_position{ 10 }, m_y_position{ 5 } {}
+	Player(std::unique_ptr<Role>& role_ptr_value) : m_role_ptr{ std::move(role_ptr_value) } {}
 
 	bool is_alive() const
 	{
@@ -13,8 +13,8 @@ public:
 	}
 
 	std::unique_ptr<Role> m_role_ptr;
-	int m_previous_x_position{};
-	int m_previous_y_position{};
-	int m_x_position{};
-	int m_y_position{};
+	int m_previous_x_position{10};
+	int m_previous_y_position{5};
+	int m_x_position{10};
+	int m_y_position{5};
 };

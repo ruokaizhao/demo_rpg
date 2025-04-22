@@ -5,7 +5,7 @@ int main()
 	std::unique_ptr<Enemy> enemy = nullptr;
 	std::unique_ptr<Character> character = nullptr;
 	
-	std::cout << " Please select your class:\n";
+	std::cout << " Please select your class:\n\n";
 	std::cout << " A: Warrior\n";
 	std::cout << " B: Rogue\n";
 	std::cout << " C: Wizard\n";
@@ -47,6 +47,8 @@ int main()
 	move_player_on_map(player, enemy);
 	show_map();
 
+	std::cout << "\nMove with (wasd), press (i) to see inventory.\n";
+
 	char direction{};
 	while (player->is_alive())
 	{
@@ -70,12 +72,17 @@ int main()
 		case 'D':
 			player->m_y_position++;
 			break;
+		case 'i':
+		case 'I':
+			show_inventory(player);
 		default:
 			break;
 		}
 
 	move_player_on_map(player, enemy);
 	show_map();
+
+	std::cout << "\nMove with (wasd), press (i) to see inventory.\n";
 	}
 
 	return 0;
