@@ -124,7 +124,7 @@ public:
 	}
 
 	// unique_ptr needs to be passed by reference, because it is not copyable.
-	static bool equip_equipment(Role& role, std::unique_ptr<GameItem>& item)
+	static bool equip_equipment(std::unique_ptr<Role>& role, std::unique_ptr<GameItem>& item)
 	{
 		if (item == nullptr || item->get_m_item_ptr() == nullptr)
 		{
@@ -135,14 +135,14 @@ public:
 		{
 			auto equipment = convert_item_to_armor(item);
 
-			if (role.m_armors.at(static_cast<size_t>(equipment->get_slot())) == nullptr)
+			if (role->m_armors.at(static_cast<size_t>(equipment->get_slot())) == nullptr)
 			{
-				role.m_armors.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
+				role->m_armors.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
 			}
 			else
 			{
-				add_to_inventory(role, role.m_armors.at(static_cast<size_t>(equipment->get_slot())));
-				role.m_armors.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
+				add_to_inventory(role, role->m_armors.at(static_cast<size_t>(equipment->get_slot())));
+				role->m_armors.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
 			}
 
 			return true;
@@ -152,14 +152,14 @@ public:
 		{
 			auto equipment = convert_item_to_weapon(item);
 
-			if (role.m_weapons.at(static_cast<size_t>(equipment->get_slot())) == nullptr)
+			if (role->m_weapons.at(static_cast<size_t>(equipment->get_slot())) == nullptr)
 			{
-				role.m_weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
+				role->m_weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
 			}
 			else
 			{
-				add_to_inventory(role, role.m_weapons.at(static_cast<size_t>(equipment->get_slot())));
-				role.m_weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
+				add_to_inventory(role, role->m_weapons.at(static_cast<size_t>(equipment->get_slot())));
+				role->m_weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
 			}
 			// Objects pointed by equipment and armor are still needed, so we need to prevent them being deleted by the smart pointers by releasing the smart pointers.
 			// However, after using shared_ptr instead of unique_ptr, we don't need to release the smart pointers here.
@@ -171,7 +171,7 @@ public:
 		return false;
 	}
 
-	static bool use_item(Role& role, const std::unique_ptr<GameItem>& item)
+	static bool use_item(std::unique_ptr<Role>& role, const std::unique_ptr<GameItem>& item)
 	{
 		if (item == nullptr || item->get_m_item_ptr() == nullptr)
 		{
@@ -184,18 +184,18 @@ public:
 
 			if (potion->get_buff() != nullptr)
 			{
-				role.apply_buff(*(potion->get_buff()));
+				role->apply_buff(*(potion->get_buff()));
 			}
 
 			// If the hit point is full and the potion does not have a buff, the potion will not be used.
-			if (role.get_m_character_ptr()->get_hit_point()->is_full() && potion->get_buff() == nullptr)
+			if (role->get_m_character_ptr()->get_hit_point()->is_full() && potion->get_buff() == nullptr)
 			{
 				return false;
 			}
 
-			if (!role.get_m_character_ptr()->get_hit_point()->is_full())
+			if (!role->get_m_character_ptr()->get_hit_point()->is_full())
 			{
-				role.get_m_character_ptr()->get_hit_point()->increase_current_point(potion->get_hit_point());
+				role->get_m_character_ptr()->get_hit_point()->increase_current_point(potion->get_hit_point());
 			}
 
 			// Reduce the count of the potion after using it.
@@ -214,20 +214,20 @@ public:
 		return false;
 	}
 
-	static bool add_to_inventory(Role& role, std::unique_ptr<GameItem>& item)
+	static bool add_to_inventory(std::unique_ptr<Role>& role, std::unique_ptr<GameItem>& item)
 	{
 		if (item == nullptr || item->get_m_item_ptr() == nullptr)
 		{
 			return false;
 		}
 
-		role.m_inventory.push_back(std::move(item));
+		role->m_inventory.push_back(std::move(item));
 
 		return true;
 	}
 
-	static void cleanup_inventory(Role& role)
+	static void cleanup_inventory(std::unique_ptr<Role>& role)
 	{
-		role.m_inventory.erase(std::remove_if(role.m_inventory.begin(), role.m_inventory.end(), [](const std::unique_ptr<GameItem>& item) -> bool {return item->is_marked_for_deletion(); }), role.m_inventory.end());
+		role->m_inventory.erase(std::remove_if(role->m_inventory.begin(), role->m_inventory.end(), [](const std::unique_ptr<GameItem>& item) -> bool {return item->is_marked_for_deletion(); }), role->m_inventory.end());
 	}
 };

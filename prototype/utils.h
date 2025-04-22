@@ -138,7 +138,7 @@ static void enter_battle(std::unique_ptr<Player>& player, std::unique_ptr<Enemy>
 
 		std::cout << std::setw(30) << std::left << "" << "Player vs. Enemy" << '\n' << '\n'
 			<< std::setw(10) << std::left
-			<< "Player: "
+			<< player->get_name()
 			<< std::setw(50) << std::left << ""
 			<< "Enemy: "
 			<< '\n'
@@ -203,7 +203,7 @@ static void enter_battle(std::unique_ptr<Player>& player, std::unique_ptr<Enemy>
 	{
 		player->m_role_ptr->get_m_character_ptr()->gain_experience(enemy->m_experience);
 		std::unique_ptr<GameItem> item_dropped = drop_item();
-		GameItemManager::add_to_inventory(*(player->m_role_ptr), item_dropped);
+		GameItemManager::add_to_inventory(player->m_role_ptr, item_dropped);
 
 		std::cout << "You have defeated the enemy!" << '\n';
 		std::cout << "You have gained " << enemy->m_experience << " experiences!" << '\n';

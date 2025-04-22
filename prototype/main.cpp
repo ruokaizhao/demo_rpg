@@ -39,9 +39,14 @@ int main()
 			break;
 		}
 	}
+
+	std::string name_input{};
+	std::cout << "Please enter your character's name: \n";
+	std::cin >> name_input;
+
 	
 	std::unique_ptr<Role> m_role_ptr = std::make_unique<Role>(character);
-	std::unique_ptr<Player> player = std::make_unique<Player>(m_role_ptr);
+	std::unique_ptr<Player> player = std::make_unique<Player>(m_role_ptr, name_input);
 
 	create_enemy(enemy, player);
 	move_player_on_map(player, enemy);
