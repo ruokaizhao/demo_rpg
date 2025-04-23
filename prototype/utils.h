@@ -17,29 +17,120 @@ static void show_map()
 	}
 }
 
-static void show_inventory(std::unique_ptr<Player>& player)
+static void show_character_sheet(std::unique_ptr<Player>& player)
 {
 	system("cls");
+	char input{};
 
-	std::cout << "Current Inventory\n\n";
+	std::cout
+		<< "Player Name: "
+		<< player->get_name() << '\n'
+		<< "Class: "
+		<< player->m_role_ptr->get_m_character_ptr()->get_class_name() << '\n'
+		<< "Level: "
+		<< player->m_role_ptr->get_m_character_ptr()->get_current_level() << '\n'
+		<< "HP: "
+		<< player->m_role_ptr->get_m_character_ptr()->get_hit_point()->get_current_point()
+		<< "/"
+		<< player->m_role_ptr->get_m_character_ptr()->get_hit_point()->get_max_point() << '\n'
+		<< "Str: "
+		<< player->m_role_ptr->get_total_strength() << '\n'
+		<< "Int: "
+		<< player->m_role_ptr->get_total_intelligence() << '\n'
+		<< "Agi: "
+		<< player->m_role_ptr->get_total_agility() << '\n'
+		<< "Physical Defense: "
+		<< player->m_role_ptr->get_total_physical_defense() << '\n'
+		<< "Magic Resistance: "
+		<< player->m_role_ptr->get_total_magic_resistance() << '\n'
+		<< "Melee Damage: "
+		<< player->m_role_ptr->get_melee_damage() << '\n'
+		<< "Ranged Damage: "
+		<< player->m_role_ptr->get_ranged_damage() << '\n';
+
+	std::cout << "\nAbilities: \n";
+
+	for (const auto& ability : player->m_role_ptr->get_m_character_ptr()->get_abilities())
+	{
+		std::cout << "  " << ability->m_name << '\n';
+	}
+		
+	std::cout << "\nArmors: \n";
+
+	for (const auto& armor : player->m_role_ptr->get_armors())
+	{
+		if (armor != nullptr)
+		{
+			std::cout << "  " << armor->get_m_item_ptr()->get_name() << '\n';
+		}
+	}
+
+	std::cout << "\nWeapons: \n";
+
+	for (const auto& weapon : player->m_role_ptr->get_weapons())
+	{
+		if (weapon != nullptr)
+		{
+			std::cout << "  " << weapon->get_m_item_ptr()->get_name() << '\n';
+		}
+	}
+
+	std::cin >> input;
+}
+
+static void show_inventory(std::unique_ptr<Player>& player)
+{
+	size_t selection{ 0 };
+	bool return_to_map{ false };
+	char input{};
 
 	std::vector<std::unique_ptr<GameItem>>& inventory = player->m_role_ptr->get_inventory();
 
 	if (inventory.size() == 0)
 	{
+		system("cls");
+		std::cout << "Current Inventory\n\n";
 		std::cout << "The inventory is empty.\n";
 	}
 	else
 	{
-		for (auto& item : inventory)
+		while (!return_to_map)
 		{
-			std::cout << "> " << item->get_m_item_ptr()->get_name() << '\n';
+			system("cls");
+			std::cout << "Current Inventory\n\n";
+
+			size_t index{ 0 };
+			for (auto& item : inventory)
+			{
+				std::cout << (index == selection ? ">  " : "   ") << item->get_m_item_ptr()->get_name() << '\n';
+				++index;
+			}
+
+			std::cout << "\n\nMove up with (w), down with (s) and (u) to use the selected item.\n\n";
+			std::cin >> input;
+
+			switch (input)
+			{
+			case 'w':
+			case 'W':
+				selection = selection <= 0 ? 0 : --selection;
+				break;
+			case 's':
+			case 'S':
+				selection = selection >= inventory.size() - 1 ? inventory.size() - 1 : ++selection;
+				break;
+			case 'u':
+			case 'U':
+			    GameItemManager::use_or_equip_item(player->m_role_ptr, selection);
+				break;
+			default:
+				return_to_map = true;
+				break;
+			}
 		}
 	}
 
 	std::cout << "\n\nPlease any key to return to the map view.\n";
-
-	char input{};
 	std::cin >> input;
 }
 
@@ -99,18 +190,13 @@ static std::unique_ptr<GameItem> drop_item()
 
 static void create_enemy(std::unique_ptr<Enemy>& enemy, const std::unique_ptr<Player>& player)
 {
-	if (enemy != nullptr)
-	{
-		world_map.at(enemy->m_x_position).at(enemy->m_y_position) = ' ';
-	}
-
 	PointPoolType min_hit_point = player->m_role_ptr->get_m_character_ptr()->get_current_level();
-	PointPoolType max_hit_point = static_cast<PointPoolType>(player->m_role_ptr->get_m_character_ptr()->get_current_level()) * 10;
+	PointPoolType max_hit_point = static_cast<PointPoolType>(player->m_role_ptr->get_m_character_ptr()->get_current_level()) * 2;
 
 	std::unique_ptr<PointPool> monster_point_pool_ptr = std::make_unique<PointPool>(Random::random(min_hit_point, max_hit_point), Random::random(min_hit_point, max_hit_point));
 
 	DamageType min_damage = player->m_role_ptr->get_m_character_ptr()->get_current_level();
-	DamageType max_damage = static_cast<DamageType>(player->m_role_ptr->get_m_character_ptr()->get_current_level()) * 5;
+	DamageType max_damage = static_cast<DamageType>(player->m_role_ptr->get_m_character_ptr()->get_current_level()) * 2;
 
 	std::unique_ptr<Monster> monster_ptr = std::make_unique<Monster>(monster_point_pool_ptr, min_damage, max_damage);
 
@@ -186,7 +272,8 @@ static void enter_battle(std::unique_ptr<Player>& player, std::unique_ptr<Enemy>
 
 		if (enemy->is_alive())
 		{
-			player->m_role_ptr->get_m_character_ptr()->get_hit_point()->reduce_current_point(enemy->m_monster_ptr->get_damage());
+			DamageType damage_taken = enemy->m_monster_ptr->get_damage() - player->m_role_ptr->get_total_physical_defense() <= 1 ? 1 : enemy->m_monster_ptr->get_damage() - player->m_role_ptr->get_total_physical_defense();
+			player->m_role_ptr->get_m_character_ptr()->get_hit_point()->reduce_current_point(damage_taken);
 		}
 		else
 		{
@@ -203,14 +290,16 @@ static void enter_battle(std::unique_ptr<Player>& player, std::unique_ptr<Enemy>
 	{
 		player->m_role_ptr->get_m_character_ptr()->gain_experience(enemy->m_experience);
 		std::unique_ptr<GameItem> item_dropped = drop_item();
+		if (item_dropped != nullptr)
+		{
+			std::cout << "You have received: " << item_dropped->get_m_item_ptr()->get_name() << '!' << '\n' << '\n';
+		}
+
 		GameItemManager::add_to_inventory(player->m_role_ptr, item_dropped);
 
 		std::cout << "You have defeated the enemy!" << '\n';
 		std::cout << "You have gained " << enemy->m_experience << " experiences!" << '\n';
-		std::cout << "You have received: " << player->m_role_ptr->get_inventory().back()->get_m_item_ptr()->get_name() << '!' << '\n' << '\n';
 		std::cout << "Press any key to continue..." << '\n';
-
-		create_enemy(enemy, player);
 	}
 
 	char input{};
@@ -230,6 +319,8 @@ static void move_player_on_map(std::unique_ptr<Player>& player, std::unique_ptr<
 
 			player->m_previous_x_position = player->m_x_position;
 			player->m_previous_y_position = player->m_y_position;
+
+			create_enemy(enemy, player);
 		}
 		else
 		{

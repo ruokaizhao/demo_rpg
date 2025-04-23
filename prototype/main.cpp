@@ -52,7 +52,7 @@ int main()
 	move_player_on_map(player, enemy);
 	show_map();
 
-	std::cout << "\nMove with (wasd), press (i) to see inventory.\n";
+	std::cout << "\nMove with (wasd), (i) to see inventory, and (c) to see character sheet.\n";
 
 	char direction{};
 	while (player->is_alive())
@@ -80,6 +80,11 @@ int main()
 		case 'i':
 		case 'I':
 			show_inventory(player);
+			break;
+		case 'c':
+		case 'C':
+			show_character_sheet(player);
+			break;
 		default:
 			break;
 		}
@@ -87,7 +92,7 @@ int main()
 	move_player_on_map(player, enemy);
 	show_map();
 
-	std::cout << "\nMove with (wasd), press (i) to see inventory.\n";
+	std::cout << "\nMove with (wasd), (i) to see inventory, and (c) to see character sheet.\n";
 	}
 
 	return 0;

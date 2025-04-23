@@ -255,9 +255,9 @@ public:
 private:
 	// If not initialized, smart pointers are default to nullptr.
 	std::unique_ptr<Character> m_character_ptr;
-	std::vector<std::unique_ptr<GameItem>> m_inventory;
-	std::array<std::unique_ptr<GameItem>, static_cast<size_t>(ArmorSlot::number_of_slots)> m_armors;
-	std::array<std::unique_ptr<GameItem>, static_cast<size_t>(WeaponSlot::number_of_slots)> m_weapons;
+	std::vector<std::unique_ptr<GameItem>> m_inventory{};
+	std::array<std::unique_ptr<GameItem>, static_cast<size_t>(ArmorSlot::number_of_slots)> m_armors{};
+	std::array<std::unique_ptr<GameItem>, static_cast<size_t>(WeaponSlot::number_of_slots)> m_weapons{};
 	BaseStat m_stat_from_buffs{};
 	std::vector<Buff> m_buffs{};
 };

@@ -27,7 +27,7 @@ private:
 
 		if (get_current_level() == 2)
 		{
-			get_abilities().emplace_back("Power Attact", 0u, 3u, 4u, AbilityTarget::enemy, AbilityScalar::strength);
+			get_abilities().emplace_back(std::make_unique<Ability>("Power Attact", 0u, 3u, 4u, AbilityTarget::enemy, AbilityScalar::strength));
 		}
 	}
 };

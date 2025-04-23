@@ -18,7 +18,7 @@ public:
 		m_current_experience{ 0u },
 		m_experience_till_next_level{ EXPERIENCE_TILL_LEVEL_TWO },
 		m_hit_point{ std::make_unique<PointPool>() },
-		m_abilities{} {
+		m_abilities_ptr{} {
 	}
 
 	const StatType get_base_strength() const
@@ -71,9 +71,9 @@ public:
 		return m_experience_till_next_level;
 	}
 
-	std::vector<Ability>& get_abilities()
+	std::vector<std::unique_ptr<Ability>>& get_abilities()
 	{
-		return m_abilities;
+		return m_abilities_ptr;
 	}
 
 	void gain_experience(ExperienceType experience_value)
@@ -111,7 +111,7 @@ private:
 	LevelType m_current_level;
 	ExperienceType m_current_experience;
 	ExperienceType m_experience_till_next_level;
-	std::vector<Ability> m_abilities;
+	std::vector<std::unique_ptr<Ability>> m_abilities_ptr;
 
 	bool check_if_leveled()
 	{

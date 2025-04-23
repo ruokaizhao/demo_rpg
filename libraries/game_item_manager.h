@@ -124,8 +124,10 @@ public:
 	}
 
 	// unique_ptr needs to be passed by reference, because it is not copyable.
-	static bool equip_equipment(std::unique_ptr<Role>& role, std::unique_ptr<GameItem>& item)
+	static bool use_or_equip_item(std::unique_ptr<Role>& role, size_t index)
 	{
+		std::unique_ptr<GameItem>& item = role->get_inventory().at(index);
+
 		if (item == nullptr || item->get_m_item_ptr() == nullptr)
 		{
 			return false;
@@ -134,16 +136,25 @@ public:
 		if (is_item_armor(item))
 		{
 			auto equipment = convert_item_to_armor(item);
+			auto slot = static_cast<size_t>(equipment->get_slot());
 
-			if (role->m_armors.at(static_cast<size_t>(equipment->get_slot())) == nullptr)
+			if (role->m_armors.at(slot) == nullptr)
 			{
-				role->m_armors.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
+				role->m_armors.at(slot) = std::move(item);
 			}
 			else
 			{
-				add_to_inventory(role, role->m_armors.at(static_cast<size_t>(equipment->get_slot())));
-				role->m_armors.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
+				// If we do
+				// add_to_inventory(role, role->m_armors.at(static_cast<size_t>(equipment->get_slot())));
+				// role->m_armors.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);,
+				// we will get an unknown file: error: SEH exception with code 0xc0000005 thrown in the test body. error,
+				// spent some time and can't figure out why.
+				std::unique_ptr<GameItem> old_item = std::move(role->m_armors.at(slot));
+				role->m_armors.at(slot) = std::move(item);
+				add_to_inventory(role, old_item);
 			}
+
+			cleanup_inventory(role);
 
 			return true;
 		}
@@ -151,31 +162,25 @@ public:
 		if (is_item_weapon(item))
 		{
 			auto equipment = convert_item_to_weapon(item);
+			auto slot = static_cast<size_t>(equipment->get_slot());
 
-			if (role->m_weapons.at(static_cast<size_t>(equipment->get_slot())) == nullptr)
+			if (role->m_weapons.at(slot) == nullptr)
 			{
-				role->m_weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
+				role->m_weapons.at(slot) = std::move(item);
 			}
 			else
 			{
-				add_to_inventory(role, role->m_weapons.at(static_cast<size_t>(equipment->get_slot())));
-				role->m_weapons.at(static_cast<size_t>(equipment->get_slot())) = std::move(item);
+				std::unique_ptr<GameItem> old_item = std::move(role->m_weapons.at(slot));
+				add_to_inventory(role, old_item);
+				role->m_weapons.at(slot) = std::move(item);
 			}
 			// Objects pointed by equipment and armor are still needed, so we need to prevent them being deleted by the smart pointers by releasing the smart pointers.
 			// However, after using shared_ptr instead of unique_ptr, we don't need to release the smart pointers here.
 			// equipment.release();
 
+			cleanup_inventory(role);
+
 			return true;
-		}
-
-		return false;
-	}
-
-	static bool use_item(std::unique_ptr<Role>& role, const std::unique_ptr<GameItem>& item)
-	{
-		if (item == nullptr || item->get_m_item_ptr() == nullptr)
-		{
-			return false;
 		}
 
 		if (is_item_potion(item))
@@ -205,8 +210,8 @@ public:
 			if (potion->get_count() == 0)
 			{
 				item->mark_for_deletion();
-				cleanup_inventory(role);
 			}
+			cleanup_inventory(role);
 
 			return true;
 		}
@@ -228,6 +233,6 @@ public:
 
 	static void cleanup_inventory(std::unique_ptr<Role>& role)
 	{
-		role->m_inventory.erase(std::remove_if(role->m_inventory.begin(), role->m_inventory.end(), [](const std::unique_ptr<GameItem>& item) -> bool {return item->is_marked_for_deletion(); }), role->m_inventory.end());
+		role->m_inventory.erase(std::remove_if(role->m_inventory.begin(), role->m_inventory.end(), [](const std::unique_ptr<GameItem>& item) -> bool {return item == nullptr || item->is_marked_for_deletion(); }), role->m_inventory.end());
 	}
 };
