@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="enums.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="world_map.h" />

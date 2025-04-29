@@ -145,6 +145,7 @@
     <ClInclude Include="buff.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="cleric.h" />
+    <ClInclude Include="enums.h" />
     <ClInclude Include="game_item.h" />
     <ClInclude Include="game_item_manager.h" />
     <ClInclude Include="include_class.h" />

@@ -1,5 +1,6 @@
 #pragma once
 #include "types.h"
+#include "enums.h"
 #include <string>
 
 struct Ability

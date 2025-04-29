@@ -41,7 +41,7 @@ int main()
 	}
 
 	std::string name_input{};
-	std::cout << "Please enter your character's name: \n";
+	std::cout << "\nPlease enter your character's name: \n";
 	std::cin >> name_input;
 
 	
@@ -79,7 +79,7 @@ int main()
 			break;
 		case 'i':
 		case 'I':
-			show_inventory(player);
+			show_inventory(player, false);
 			break;
 		case 'c':
 		case 'C':
