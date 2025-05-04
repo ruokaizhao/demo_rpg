@@ -13,7 +13,7 @@ class Character
 
 public:
 	Character()
-		: m_base_stat{ BaseStat{} },
+		: m_base_stat_ptr{ std::make_unique<BaseStat>()},
 		m_current_level{ 1u },
 		m_current_experience{ 0u },
 		m_experience_till_next_level{ EXPERIENCE_TILL_LEVEL_TWO },
@@ -23,27 +23,27 @@ public:
 
 	const StatType get_base_strength() const
 	{
-		return m_base_stat.m_strength;
+		return m_base_stat_ptr->get_m_strength();
 	}
 
 	const StatType get_base_intelligence() const
 	{
-		return m_base_stat.m_intelligence;
+		return m_base_stat_ptr->get_m_intelligence();
 	}
 
 	const StatType get_base_agility() const
 	{
-		return m_base_stat.m_agility;
+		return m_base_stat_ptr->get_m_agility();
 	}
 
 	const StatType get_base_physical_defense() const
 	{
-		return m_base_stat.m_physical_defense;
+		return m_base_stat_ptr->get_m_physical_defense();
 	}
 
 	const StatType get_base_magic_resistance() const
 	{
-		return m_base_stat.m_magic_resistance;
+		return m_base_stat_ptr->get_m_magic_resistance();
 	}
 
 	LevelType get_current_level() const
@@ -92,20 +92,20 @@ public:
 protected:
 	void increase_stat(StatType strength_value = 0u, StatType intelligence_value = 0u, StatType agility_value = 0u, StatType armor_value = 0u, StatType magic_resistance_value = 0u)
 	{
-		m_base_stat.m_strength += strength_value;
-		m_base_stat.m_intelligence += intelligence_value;
-		m_base_stat.m_agility += agility_value;
-		m_base_stat.m_physical_defense += armor_value;
-		m_base_stat.m_magic_resistance += magic_resistance_value;
+		m_base_stat_ptr->set_m_strength(m_base_stat_ptr->get_m_strength() + strength_value);
+		m_base_stat_ptr->set_m_intelligence(m_base_stat_ptr->get_m_intelligence() + intelligence_value);
+		m_base_stat_ptr->set_m_agility(m_base_stat_ptr->get_m_agility() + agility_value);
+		m_base_stat_ptr->set_m_physical_defense(m_base_stat_ptr->get_m_physical_defense() + armor_value);
+		m_base_stat_ptr->set_m_magic_resistance(m_base_stat_ptr->get_m_magic_resistance() + magic_resistance_value);
 	}
 
 	void increase_stat(BaseStat stats_value)
 	{
-		m_base_stat += stats_value;
+		(*m_base_stat_ptr) += stats_value;
 	}
 
 private:
-	BaseStat m_base_stat;
+	std::unique_ptr<BaseStat> m_base_stat_ptr;
 	std::unique_ptr<PointPool> m_hit_point;
 	std::unique_ptr<PointPool> m_mana_point;
 	LevelType m_current_level;

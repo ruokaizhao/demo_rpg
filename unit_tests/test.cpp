@@ -10,58 +10,57 @@ namespace DemoRPGUnitTests {
     TEST(AbilityTest, Initialization) {
         Ability unnamed_ability;
 
-        EXPECT_EQ("unnamed", unnamed_ability.m_name);
-        EXPECT_EQ(0u, unnamed_ability.m_cost);
-        EXPECT_EQ(1u, unnamed_ability.m_cooldown);
-        EXPECT_EQ(1u, unnamed_ability.m_hit_point_effect);
-        EXPECT_EQ(AbilityTarget::self, unnamed_ability.m_target);
-        EXPECT_EQ(AbilityScalar::none, unnamed_ability.m_scalar);
+        EXPECT_EQ("unnamed", unnamed_ability.get_m_name());
+        EXPECT_EQ(0u, unnamed_ability.get_m_cost());
+        EXPECT_EQ(1u, unnamed_ability.get_m_cooldown());
+        EXPECT_EQ(1u, unnamed_ability.get_m_hit_point_effect());
+        EXPECT_EQ(AbilityTarget::self, unnamed_ability.get_m_target());
+        EXPECT_EQ(AbilityScalar::none, unnamed_ability.get_m_scalar());
 
         Ability heal_ability{ "Heal", 1u, 2u, 3u, AbilityTarget::ally, AbilityScalar::intelligence };
 
-        EXPECT_EQ("Heal", heal_ability.m_name);
-        EXPECT_EQ(1u, heal_ability.m_cost);
-        EXPECT_EQ(2u, heal_ability.m_cooldown);
-        EXPECT_EQ(3u, heal_ability.m_hit_point_effect);
-        EXPECT_EQ(AbilityTarget::ally, heal_ability.m_target);
-        EXPECT_EQ(AbilityScalar::intelligence, heal_ability.m_scalar);
+        EXPECT_EQ("Heal", heal_ability.get_m_name());
+        EXPECT_EQ(1u, heal_ability.get_m_cost());
+        EXPECT_EQ(2u, heal_ability.get_m_cooldown());
+        EXPECT_EQ(3u, heal_ability.get_m_hit_point_effect());
+        EXPECT_EQ(AbilityTarget::ally, heal_ability.get_m_target());
+        EXPECT_EQ(AbilityScalar::intelligence, heal_ability.get_m_scalar());
     }
 
     // The following tests are for the Buff class.
     TEST(BuffTest, Initialization) {
         Buff unnamed_buff;
 
-        EXPECT_EQ(unnamed_buff.m_name, "unnamed");
-        EXPECT_FALSE(unnamed_buff.m_is_debuff);
-        EXPECT_EQ(unnamed_buff.m_duration, 2u);
-        EXPECT_EQ(unnamed_buff.m_stat.m_strength, 0u);
-        EXPECT_EQ(unnamed_buff.m_stat.m_intelligence, 0u);
-        EXPECT_EQ(unnamed_buff.m_stat.m_agility, 0u);
-        EXPECT_EQ(unnamed_buff.m_stat.m_physical_defense, 0u);
-        EXPECT_EQ(unnamed_buff.m_stat.m_magic_resistance, 0u);
+        EXPECT_EQ(unnamed_buff.get_m_name(), "unnamed");
+        EXPECT_FALSE(unnamed_buff.get_m_is_debuff());
+        EXPECT_EQ(unnamed_buff.get_m_duration(), 2u);
+        EXPECT_EQ(unnamed_buff.get_m_stat_ptr()->get_m_strength(), 0u);
+        EXPECT_EQ(unnamed_buff.get_m_stat_ptr()->get_m_intelligence(), 0u);
+        EXPECT_EQ(unnamed_buff.get_m_stat_ptr()->get_m_agility(), 0u);
+        EXPECT_EQ(unnamed_buff.get_m_stat_ptr()->get_m_physical_defense(), 0u);
+        EXPECT_EQ(unnamed_buff.get_m_stat_ptr()->get_m_magic_resistance(), 0u);
 
         Buff power_buff("Power", false, 5u, 10u, 20u, 30u, 40u, 50u);
 
-        EXPECT_EQ(power_buff.m_name, "Power");
-        EXPECT_FALSE(power_buff.m_is_debuff);
-        EXPECT_EQ(power_buff.m_duration, 5u);
-        EXPECT_EQ(power_buff.m_stat.m_strength, 10u);
-        EXPECT_EQ(power_buff.m_stat.m_intelligence, 20u);
-        EXPECT_EQ(power_buff.m_stat.m_agility, 30u);
-        EXPECT_EQ(power_buff.m_stat.m_physical_defense, 40u);
-        EXPECT_EQ(power_buff.m_stat.m_magic_resistance, 50u);
+        EXPECT_EQ(power_buff.get_m_name(), "Power");
+        EXPECT_FALSE(power_buff.get_m_is_debuff());
+        EXPECT_EQ(power_buff.get_m_duration(), 5u);
+        EXPECT_EQ(power_buff.get_m_stat_ptr()->get_m_strength(), 10u);
+        EXPECT_EQ(power_buff.get_m_stat_ptr()->get_m_intelligence(), 20u);
+        EXPECT_EQ(power_buff.get_m_stat_ptr()->get_m_agility(), 30u);
+        EXPECT_EQ(power_buff.get_m_stat_ptr()->get_m_physical_defense(), 40u);
+        EXPECT_EQ(power_buff.get_m_stat_ptr()->get_m_magic_resistance(), 50u);
 
-        BaseStat core_stat{ 5u, 10u, 15u, 20u, 25u };
-        Buff Stat_buff(core_stat, "Stat", true, 3u);
+        Buff Stat_buff(std::make_unique<BaseStat>(5u, 10u, 15u, 20u, 25u), "Stat", true, 3u);
 
-        EXPECT_EQ(Stat_buff.m_name, "Stat");
-        EXPECT_TRUE(Stat_buff.m_is_debuff);
-        EXPECT_EQ(Stat_buff.m_duration, 3u);
-        EXPECT_EQ(Stat_buff.m_stat.m_strength, 5u);
-        EXPECT_EQ(Stat_buff.m_stat.m_intelligence, 10u);
-        EXPECT_EQ(Stat_buff.m_stat.m_agility, 15u);
-        EXPECT_EQ(Stat_buff.m_stat.m_physical_defense, 20u);
-        EXPECT_EQ(Stat_buff.m_stat.m_magic_resistance, 25u);
+        EXPECT_EQ(Stat_buff.get_m_name(), "Stat");
+        EXPECT_TRUE(Stat_buff.get_m_is_debuff());
+        EXPECT_EQ(Stat_buff.get_m_duration(), 3u);
+        EXPECT_EQ(Stat_buff.get_m_stat_ptr()->get_m_strength(), 5u);
+        EXPECT_EQ(Stat_buff.get_m_stat_ptr()->get_m_intelligence(), 10u);
+        EXPECT_EQ(Stat_buff.get_m_stat_ptr()->get_m_agility(), 15u);
+        EXPECT_EQ(Stat_buff.get_m_stat_ptr()->get_m_physical_defense(), 20u);
+        EXPECT_EQ(Stat_buff.get_m_stat_ptr()->get_m_magic_resistance(), 25u);
     }
 
     // Test case for Cleric class
@@ -80,7 +79,7 @@ namespace DemoRPGUnitTests {
         EXPECT_EQ(cleric.get_base_intelligence(), 5u);
         EXPECT_EQ(cleric.get_base_agility(), 1u);
         ASSERT_EQ(cleric.get_abilities().size(), 1u);
-        EXPECT_EQ(cleric.get_abilities().at(0)->m_name, "Heal");
+        EXPECT_EQ(cleric.get_abilities().at(0)->get_m_name(), "Heal");
     }
 
     TEST(ClericTest, LevelUp) {
@@ -98,7 +97,7 @@ namespace DemoRPGUnitTests {
         EXPECT_EQ(cleric.get_base_intelligence(), 8u);
         EXPECT_EQ(cleric.get_base_agility(), 2u);
         ASSERT_EQ(cleric.get_abilities().size(), 2u);
-        EXPECT_EQ(cleric.get_abilities()[1]->m_name, "Smite");
+        EXPECT_EQ(cleric.get_abilities()[1]->get_m_name(), "Smite");
     }
 
     // Test case for Rogue class
@@ -158,7 +157,7 @@ namespace DemoRPGUnitTests {
         EXPECT_EQ(warrior.get_base_intelligence(), 3u);
         EXPECT_EQ(warrior.get_base_agility(), 3u);
         ASSERT_EQ(warrior.get_abilities().size(), 1u);
-        EXPECT_EQ(warrior.get_abilities()[0]->m_name, "Power Attact");
+        EXPECT_EQ(warrior.get_abilities()[0]->get_m_name(), "Power Attact");
     }
 
     // Test case for Wizard class
@@ -177,7 +176,7 @@ namespace DemoRPGUnitTests {
         EXPECT_EQ(wizard.get_base_intelligence(), 8u);
         EXPECT_EQ(wizard.get_base_agility(), 2u);
         ASSERT_EQ(wizard.get_abilities().size(), 1u);
-        EXPECT_EQ(wizard.get_abilities()[0]->m_name, "Fireball");
+        EXPECT_EQ(wizard.get_abilities()[0]->get_m_name(), "Fireball");
     }
 
     TEST(WizardTest, LevelUp) {
@@ -195,79 +194,79 @@ namespace DemoRPGUnitTests {
         EXPECT_EQ(wizard.get_base_intelligence(), 12u);
         EXPECT_EQ(wizard.get_base_agility(), 3u);
         ASSERT_EQ(wizard.get_abilities().size(), 2u);
-        EXPECT_EQ(wizard.get_abilities()[1]->m_name, "Icebolt");
+        EXPECT_EQ(wizard.get_abilities()[1]->get_m_name(), "Icebolt");
     }
 
     // The following tests are for the CoreStat class.
     TEST(CoreStatTest, Initialization) {
         BaseStat core_stat_1;
 
-        EXPECT_EQ(core_stat_1.m_strength, 0u);
-        EXPECT_EQ(core_stat_1.m_strength, 0u);
-        EXPECT_EQ(core_stat_1.m_intelligence, 0u);
-        EXPECT_EQ(core_stat_1.m_agility, 0u);
-        EXPECT_EQ(core_stat_1.m_physical_defense, 0u);
-        EXPECT_EQ(core_stat_1.m_magic_resistance, 0u);
+        EXPECT_EQ(core_stat_1.get_m_strength(), 0u);
+        EXPECT_EQ(core_stat_1.get_m_strength(), 0u);
+        EXPECT_EQ(core_stat_1.get_m_intelligence(), 0u);
+        EXPECT_EQ(core_stat_1.get_m_agility(), 0u);
+        EXPECT_EQ(core_stat_1.get_m_physical_defense(), 0u);
+        EXPECT_EQ(core_stat_1.get_m_magic_resistance(), 0u);
 
         BaseStat core_stat_2{ 0u, 0u, 0u, 5u, 5u };
 
-        EXPECT_EQ(core_stat_2.m_strength, 0u);
-        EXPECT_EQ(core_stat_2.m_intelligence, 0u);
-        EXPECT_EQ(core_stat_2.m_agility, 0u);
-        EXPECT_EQ(core_stat_2.m_physical_defense, 5u);
-        EXPECT_EQ(core_stat_2.m_magic_resistance, 5u);
+        EXPECT_EQ(core_stat_2.get_m_strength(), 0u);
+        EXPECT_EQ(core_stat_2.get_m_intelligence(), 0u);
+        EXPECT_EQ(core_stat_2.get_m_agility(), 0u);
+        EXPECT_EQ(core_stat_2.get_m_physical_defense(), 5u);
+        EXPECT_EQ(core_stat_2.get_m_magic_resistance(), 5u);
     }
 
     TEST(CoreStatTest, AdditionAndSubtraction) {
         BaseStat core_stat_1{ 0u, 0u, 0u, 5u, 5u };
 
-        EXPECT_EQ(core_stat_1.m_strength, 0u);
-        EXPECT_EQ(core_stat_1.m_intelligence, 0u);
-        EXPECT_EQ(core_stat_1.m_agility, 0u);
-        EXPECT_EQ(core_stat_1.m_physical_defense, 5u);
-        EXPECT_EQ(core_stat_1.m_magic_resistance, 5u);
+        EXPECT_EQ(core_stat_1.get_m_strength(), 0u);
+        EXPECT_EQ(core_stat_1.get_m_intelligence(), 0u);
+        EXPECT_EQ(core_stat_1.get_m_agility(), 0u);
+        EXPECT_EQ(core_stat_1.get_m_physical_defense(), 5u);
+        EXPECT_EQ(core_stat_1.get_m_magic_resistance(), 5u);
 
         BaseStat core_stat_2{ 1u, 1u, 1u, 2u, 2u };
         core_stat_2 += core_stat_1;
 
-        EXPECT_EQ(core_stat_2.m_strength, 1u);
-        EXPECT_EQ(core_stat_2.m_intelligence, 1u);
-        EXPECT_EQ(core_stat_2.m_agility, 1u);
-        EXPECT_EQ(core_stat_2.m_physical_defense, 7u);
-        EXPECT_EQ(core_stat_2.m_magic_resistance, 7u);
+        EXPECT_EQ(core_stat_2.get_m_strength(), 1u);
+        EXPECT_EQ(core_stat_2.get_m_intelligence(), 1u);
+        EXPECT_EQ(core_stat_2.get_m_agility(), 1u);
+        EXPECT_EQ(core_stat_2.get_m_physical_defense(), 7u);
+        EXPECT_EQ(core_stat_2.get_m_magic_resistance(), 7u);
 
         BaseStat core_stat_3{ 10u, 10u, 10u, 10u, 10u };
         core_stat_3 -= core_stat_2;
 
-        EXPECT_EQ(core_stat_3.m_strength, 9u);
-        EXPECT_EQ(core_stat_3.m_intelligence, 9u);
-        EXPECT_EQ(core_stat_3.m_agility, 9u);
-        EXPECT_EQ(core_stat_3.m_physical_defense, 3u);
-        EXPECT_EQ(core_stat_3.m_magic_resistance, 3u);
+        EXPECT_EQ(core_stat_3.get_m_strength(), 9u);
+        EXPECT_EQ(core_stat_3.get_m_intelligence(), 9u);
+        EXPECT_EQ(core_stat_3.get_m_agility(), 9u);
+        EXPECT_EQ(core_stat_3.get_m_physical_defense(), 3u);
+        EXPECT_EQ(core_stat_3.get_m_magic_resistance(), 3u);
     }
 
     // The following tests are for the Equipment class.
     TEST(EquipmentTest, Armor) {
-        std::unique_ptr<GameItem> armor = GameItemManager::generate_item("Helmet", ArmorSlot::head, BaseStat{ 1u, 1u, 1u, 1u, 1u });
+        std::unique_ptr<GameItem> armor = GameItemManager::generate_item("Helmet", ArmorSlot::head, std::make_unique<BaseStat>(1u, 1u, 1u, 1u, 1u));
 
         EXPECT_EQ(armor->get_m_item_ptr()->get_name(), "Helmet");
         EXPECT_EQ(dynamic_cast<Armor*>(armor->get_m_item_ptr().get())->get_slot(), ArmorSlot::head);
-        EXPECT_EQ(dynamic_cast<Armor*>(armor->get_m_item_ptr().get())->get_stat().m_strength, 1u);
-        EXPECT_EQ(dynamic_cast<Armor*>(armor->get_m_item_ptr().get())->get_stat().m_intelligence, 1u);
-        EXPECT_EQ(dynamic_cast<Armor*>(armor->get_m_item_ptr().get())->get_stat().m_agility, 1u);
-        EXPECT_EQ(dynamic_cast<Armor*>(armor->get_m_item_ptr().get())->get_stat().m_physical_defense, 1u);
-        EXPECT_EQ(dynamic_cast<Armor*>(armor->get_m_item_ptr().get())->get_stat().m_magic_resistance, 1u);
+        EXPECT_EQ(dynamic_cast<Armor*>(armor->get_m_item_ptr().get())->get_stat_ptr()->get_m_strength(), 1u);
+        EXPECT_EQ(dynamic_cast<Armor*>(armor->get_m_item_ptr().get())->get_stat_ptr()->get_m_intelligence(), 1u);
+        EXPECT_EQ(dynamic_cast<Armor*>(armor->get_m_item_ptr().get())->get_stat_ptr()->get_m_agility(), 1u);
+        EXPECT_EQ(dynamic_cast<Armor*>(armor->get_m_item_ptr().get())->get_stat_ptr()->get_m_physical_defense(), 1u);
+        EXPECT_EQ(dynamic_cast<Armor*>(armor->get_m_item_ptr().get())->get_stat_ptr()->get_m_magic_resistance(), 1u);
     }
 
     TEST(EquipmentTest, Weapon) {
-        std::unique_ptr<GameItem> weapon = GameItemManager::generate_item("Sword", WeaponSlot::melee, BaseStat{ 1u, 1u, 1u, 1u, 1u }, false, 5u, 10u);
+        std::unique_ptr<GameItem> weapon = GameItemManager::generate_item("Sword", WeaponSlot::melee, std::make_unique<BaseStat>(1u, 1u, 1u, 1u, 1u), false, 5u, 10u);
         EXPECT_EQ(weapon->get_m_item_ptr()->get_name(), "Sword");
         EXPECT_EQ(dynamic_cast<Weapon*>(weapon->get_m_item_ptr().get())->get_slot(), WeaponSlot::melee);
-        EXPECT_EQ(dynamic_cast<Weapon*>(weapon->get_m_item_ptr().get())->get_stat().m_strength, 1u);
-        EXPECT_EQ(dynamic_cast<Weapon*>(weapon->get_m_item_ptr().get())->get_stat().m_intelligence, 1u);
-        EXPECT_EQ(dynamic_cast<Weapon*>(weapon->get_m_item_ptr().get())->get_stat().m_agility, 1u);
-        EXPECT_EQ(dynamic_cast<Weapon*>(weapon->get_m_item_ptr().get())->get_stat().m_physical_defense, 1u);
-        EXPECT_EQ(dynamic_cast<Weapon*>(weapon->get_m_item_ptr().get())->get_stat().m_magic_resistance, 1u);
+        EXPECT_EQ(dynamic_cast<Weapon*>(weapon->get_m_item_ptr().get())->get_stat_ptr()->get_m_strength(), 1u);
+        EXPECT_EQ(dynamic_cast<Weapon*>(weapon->get_m_item_ptr().get())->get_stat_ptr()->get_m_intelligence(), 1u);
+        EXPECT_EQ(dynamic_cast<Weapon*>(weapon->get_m_item_ptr().get())->get_stat_ptr()->get_m_agility(), 1u);
+        EXPECT_EQ(dynamic_cast<Weapon*>(weapon->get_m_item_ptr().get())->get_stat_ptr()->get_m_physical_defense(), 1u);
+        EXPECT_EQ(dynamic_cast<Weapon*>(weapon->get_m_item_ptr().get())->get_stat_ptr()->get_m_magic_resistance(), 1u);
         EXPECT_EQ(dynamic_cast<Weapon*>(weapon->get_m_item_ptr().get())->get_min_damage(), 5u);
         EXPECT_EQ(dynamic_cast<Weapon*>(weapon->get_m_item_ptr().get())->get_max_damage(), 10u);
         EXPECT_FALSE(dynamic_cast<Weapon*>(weapon->get_m_item_ptr().get())->is_two_handed());
@@ -283,35 +282,35 @@ namespace DemoRPGUnitTests {
 
     // The following tests are for the Item class.
     TEST(ItemTest, Armor) {
-        std::unique_ptr<GameItem> armor = GameItemManager::generate_item("Helmet", ArmorSlot::head, BaseStat{ 1u, 1u, 1u, 1u, 1u });
+        std::unique_ptr<GameItem> armor = GameItemManager::generate_item("Helmet", ArmorSlot::head, std::make_unique<BaseStat>(1u, 1u, 1u, 1u, 1u));
 
         EXPECT_EQ(armor->get_m_item_ptr()->get_name(), "Helmet");
-        EXPECT_FALSE(armor->is_marked_for_deletion());
+        EXPECT_FALSE(armor->get_m_marked_for_deletion());
         armor->mark_for_deletion();
-        EXPECT_TRUE(armor->is_marked_for_deletion());
+        EXPECT_TRUE(armor->get_m_marked_for_deletion());
     }
 
     TEST(ItemTest, Weapon) {
-        std::unique_ptr<GameItem> weapon = GameItemManager::generate_item("Sword", WeaponSlot::melee, BaseStat{ 1u, 1u, 1u, 1u, 1u }, false, 5u, 10u);
+        std::unique_ptr<GameItem> weapon = GameItemManager::generate_item("Sword", WeaponSlot::melee, std::make_unique<BaseStat>(1u, 1u, 1u, 1u, 1u), false, 5u, 10u);
         EXPECT_EQ(weapon->get_m_item_ptr()->get_name(), "Sword");
 
-        EXPECT_FALSE(weapon->is_marked_for_deletion());
+        EXPECT_FALSE(weapon->get_m_marked_for_deletion());
         weapon->mark_for_deletion();
-        EXPECT_TRUE(weapon->is_marked_for_deletion());
+        EXPECT_TRUE(weapon->get_m_marked_for_deletion());
     }
 
     TEST(ItemTest, Potion) {
         std::unique_ptr<GameItem> potion = GameItemManager::generate_item("Heal Potion", 5u, 3u);
         EXPECT_EQ(potion->get_m_item_ptr()->get_name(), "Heal Potion");
 
-        EXPECT_FALSE(potion->is_marked_for_deletion());
+        EXPECT_FALSE(potion->get_m_marked_for_deletion());
         potion->mark_for_deletion();
-        EXPECT_TRUE(potion->is_marked_for_deletion());
+        EXPECT_TRUE(potion->get_m_marked_for_deletion());
     }
 
     // The following tests are for the GameItemManager class.
     TEST(GameItemManagerTest, GenerateArmorItem) {
-        std::unique_ptr<GameItem> item = GameItemManager::generate_item("Helmet", ArmorSlot::head, BaseStat{ 1u, 1u, 1u, 1u, 1u });
+        std::unique_ptr<GameItem> item = GameItemManager::generate_item("Helmet", ArmorSlot::head, std::make_unique<BaseStat>(1u, 1u, 1u, 1u, 1u));
         ASSERT_NE(item, nullptr);
         EXPECT_TRUE(GameItemManager::is_item_armor(item));
         EXPECT_EQ(GameItemManager::convert_item_to_weapon(item), nullptr);
@@ -322,15 +321,15 @@ namespace DemoRPGUnitTests {
 
         EXPECT_EQ(armor->get_name(), "Helmet");
         EXPECT_EQ(armor->get_slot(), ArmorSlot::head);
-        EXPECT_EQ(armor->get_stat().m_strength, 1u);
-        EXPECT_EQ(armor->get_stat().m_intelligence, 1u);
-        EXPECT_EQ(armor->get_stat().m_agility, 1u);
-        EXPECT_EQ(armor->get_stat().m_physical_defense, 1u);
-        EXPECT_EQ(armor->get_stat().m_magic_resistance, 1u);
+        EXPECT_EQ(armor->get_stat_ptr()->get_m_strength(), 1u);
+        EXPECT_EQ(armor->get_stat_ptr()->get_m_intelligence(), 1u);
+        EXPECT_EQ(armor->get_stat_ptr()->get_m_agility(), 1u);
+        EXPECT_EQ(armor->get_stat_ptr()->get_m_physical_defense(), 1u);
+        EXPECT_EQ(armor->get_stat_ptr()->get_m_magic_resistance(), 1u);
     }
 
     TEST(GameItemManagerTest, GenerateWeaponItem) {
-        std::unique_ptr<GameItem> item = GameItemManager::generate_item("Sword", WeaponSlot::melee, BaseStat{ 1u, 1u, 1u, 1u, 1u }, false, 5u, 10u);
+        std::unique_ptr<GameItem> item = GameItemManager::generate_item("Sword", WeaponSlot::melee, std::make_unique<BaseStat>(1u, 1u, 1u, 1u, 1u), false, 5u, 10u);
         ASSERT_NE(item, nullptr);
         EXPECT_TRUE(GameItemManager::is_item_weapon(item));
         EXPECT_EQ(GameItemManager::convert_item_to_armor(item), nullptr);
@@ -341,11 +340,11 @@ namespace DemoRPGUnitTests {
 
         EXPECT_EQ(weapon->get_name(), "Sword");
         EXPECT_EQ(weapon->get_slot(), WeaponSlot::melee);
-        EXPECT_EQ(weapon->get_stat().m_strength, 1u);
-        EXPECT_EQ(weapon->get_stat().m_intelligence, 1u);
-        EXPECT_EQ(weapon->get_stat().m_agility, 1u);
-        EXPECT_EQ(weapon->get_stat().m_physical_defense, 1u);
-        EXPECT_EQ(weapon->get_stat().m_magic_resistance, 1u);
+        EXPECT_EQ(weapon->get_stat_ptr()->get_m_strength(), 1u);
+        EXPECT_EQ(weapon->get_stat_ptr()->get_m_intelligence(), 1u);
+        EXPECT_EQ(weapon->get_stat_ptr()->get_m_agility(), 1u);
+        EXPECT_EQ(weapon->get_stat_ptr()->get_m_physical_defense(), 1u);
+        EXPECT_EQ(weapon->get_stat_ptr()->get_m_magic_resistance(), 1u);
         EXPECT_EQ(weapon->get_min_damage(), 5u);
         EXPECT_EQ(weapon->get_max_damage(), 10u);
         EXPECT_FALSE(weapon->is_two_handed());
@@ -370,46 +369,45 @@ namespace DemoRPGUnitTests {
 
     TEST(GameItemManagerTest, UseOrEquipArmorItem) {
         std::unique_ptr<Role> warrior = std::make_unique<Role>(std::unique_ptr<Character>{new Warrior{}});
-        std::unique_ptr<GameItem> item_helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, BaseStat{ 1u, 1u, 1u, 1u, 1u });
-        GameItemManager::add_to_inventory(warrior, item_helmet);
+        std::unique_ptr<GameItem> item_helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, std::make_unique<BaseStat>(1u, 1u, 1u, 1u, 1u));
+        GameItemManager::add_to_inventory(warrior, std::move(item_helmet));
 
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
         EXPECT_EQ(warrior->get_armor_at(ArmorSlot::head)->get_m_item_ptr()->get_name(), "Helmet");
         EXPECT_EQ(warrior->get_inventory().size(), 0);
 
-        std::unique_ptr<GameItem> item_stronger_helmet = GameItemManager::generate_item("Stronger Helmet", ArmorSlot::head, BaseStat{ 2u, 2u, 2u, 2u, 2u });
-        GameItemManager::add_to_inventory(warrior, item_stronger_helmet);
+        std::unique_ptr<GameItem> item_stronger_helmet = GameItemManager::generate_item("Stronger Helmet", ArmorSlot::head, std::make_unique<BaseStat>(1u, 1u, 1u, 1u, 1u));
+        GameItemManager::add_to_inventory(warrior, std::move(item_stronger_helmet));
         EXPECT_EQ(warrior->get_inventory().size(), 1);
 
-        // Save the name before equipping
-        std::string stronger_helmet_name = warrior->get_inventory().at(0)->get_m_item_ptr()->get_name();
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
-        EXPECT_EQ(warrior->get_armor_at(ArmorSlot::head)->get_m_item_ptr()->get_name(), stronger_helmet_name);
+        EXPECT_EQ(warrior->get_armor_at(ArmorSlot::head)->get_m_item_ptr()->get_name(), "Stronger Helmet");
         EXPECT_EQ(warrior->get_inventory().size(), 1);
+        EXPECT_EQ(warrior->get_inventory().at(0)->get_m_item_ptr()->get_name(), "Helmet");
     }
 
     TEST(GameItemManagerTest, UseOrEquipWeaponItem) {
         std::unique_ptr<Role> warrior = std::make_unique<Role>(std::unique_ptr<Character>{new Warrior{}});
-        std::unique_ptr<GameItem> item_sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, BaseStat{ 1u, 1u, 1u, 1u, 1u }, true, 5u, 10u);
-        GameItemManager::add_to_inventory(warrior, item_sword);
+        std::unique_ptr<GameItem> item_sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, std::make_unique<BaseStat>(1u, 1u, 1u, 1u, 1u), true, 5u, 10u);
+        GameItemManager::add_to_inventory(warrior, std::move(item_sword));
 
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
         EXPECT_EQ(warrior->get_weapon_at(WeaponSlot::melee)->get_m_item_ptr()->get_name(), "Sword");
         EXPECT_EQ(warrior->get_inventory().size(), 0);
 
-        /*std::unique_ptr<GameItem> item_sharper_sword = GameItemManager::generate_item("Sharper Sword", WeaponSlot::melee, BaseStat{ 2u, 2u, 2u, 2u, 2u }, true, 10u, 20u);
-        GameItemManager::add_to_inventory(warrior, item_sharper_sword);
+        std::unique_ptr<GameItem> item_sharper_sword = GameItemManager::generate_item("Sharper Sword", WeaponSlot::melee, std::make_unique<BaseStat>(2u, 2u, 2u, 2u, 2u), true, 10u, 20u);
+        GameItemManager::add_to_inventory(warrior, std::move(item_sharper_sword));
 
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
         EXPECT_EQ(warrior->get_weapon_at(WeaponSlot::melee)->get_m_item_ptr()->get_name(), "Sharper Sword");
         EXPECT_EQ(warrior->get_inventory().size(), 1);
-        EXPECT_EQ(warrior->get_inventory().at(0)->get_m_item_ptr()->get_name(), "Sword");*/
+        EXPECT_EQ(warrior->get_inventory().at(0)->get_m_item_ptr()->get_name(), "Sword");
     }
 
     TEST(GameItemManagerTest, UseOrEquipPotionItem) {
         std::unique_ptr<Role> warrior = std::make_unique<Role>(std::unique_ptr<Character>{new Warrior{}});
         std::unique_ptr<GameItem> item_heal_potion = GameItemManager::generate_item("Heal Potion", 6u, 3u);
-        GameItemManager::add_to_inventory(warrior, item_heal_potion);
+        GameItemManager::add_to_inventory(warrior, std::move(item_heal_potion));
 
         EXPECT_EQ(warrior->get_m_character_ptr()->get_hit_point()->get_current_point(), 18u);
         EXPECT_FALSE(GameItemManager::use_or_equip_item(warrior, 0));
@@ -433,7 +431,7 @@ namespace DemoRPGUnitTests {
     TEST(GameItemManagerTest, AddToInventory) {
         std::unique_ptr<Role> warrior = std::make_unique<Role>(std::unique_ptr<Character>{new Warrior{}});
         std::unique_ptr<GameItem> item_heal_potion = GameItemManager::generate_item("Heal Potion", 6u, 2u);
-        ASSERT_TRUE(GameItemManager::add_to_inventory(warrior, item_heal_potion));
+        ASSERT_TRUE(GameItemManager::add_to_inventory(warrior, std::move(item_heal_potion)));
         ASSERT_EQ(warrior->get_inventory().size(), 1);
 
         warrior->get_m_character_ptr()->get_hit_point()->reduce_current_point(10u);
@@ -451,7 +449,7 @@ namespace DemoRPGUnitTests {
         std::unique_ptr<Role> warrior = std::make_unique<Role>(std::unique_ptr<Character>{new Warrior{}});
         std::unique_ptr<GameItem> item_heal_potion = GameItemManager::generate_item("Heal Potion", 6u, 2u);
 
-        GameItemManager::add_to_inventory(warrior, item_heal_potion);
+        GameItemManager::add_to_inventory(warrior, std::move(item_heal_potion));
         ASSERT_EQ(warrior->get_inventory().size(), 1);
 
         warrior->get_inventory().at(0)->mark_for_deletion();
@@ -561,8 +559,8 @@ namespace DemoRPGUnitTests {
 
     TEST(RoleTest, ArmorEquipment) {
         std::unique_ptr<Role> warrior = std::make_unique<Role>(std::unique_ptr<Character>{new Warrior{}});
-        auto helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, BaseStat{ 5u,5u,5u,5u,5u });
-        GameItemManager::add_to_inventory(warrior, helmet);
+        auto helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, std::make_unique<BaseStat>(5u, 5u, 5u, 5u, 5u));
+        GameItemManager::add_to_inventory(warrior, std::move(helmet));
 
         EXPECT_EQ(warrior->get_armor_at(ArmorSlot::head), nullptr);
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
@@ -572,8 +570,8 @@ namespace DemoRPGUnitTests {
 
     TEST(RoleTest, MeleeWeaponEquipment) {
         std::unique_ptr<Role> warrior = std::make_unique<Role>(std::unique_ptr<Character>{new Warrior{}});
-        auto sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, BaseStat{}, true, 10u, 20u);
-        GameItemManager::add_to_inventory(warrior, sword);
+        auto sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, std::make_unique<BaseStat>(), true, 10u, 20u);
+        GameItemManager::add_to_inventory(warrior, std::move(sword));
 
         EXPECT_EQ(warrior->get_weapon_at(WeaponSlot::melee), nullptr);
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
@@ -591,8 +589,8 @@ namespace DemoRPGUnitTests {
 
     TEST(RoleTest, RangedWeaponEquipment) {
         std::unique_ptr<Role> warrior = std::make_unique<Role>(std::unique_ptr<Character>{new Warrior{}});
-        auto bow = GameItemManager::generate_item("Bow", WeaponSlot::ranged, BaseStat{}, true, 8u, 15u);
-        GameItemManager::add_to_inventory(warrior, bow);
+        auto bow = GameItemManager::generate_item("Bow", WeaponSlot::ranged, std::make_unique<BaseStat>(), true, 8u, 15u);
+        GameItemManager::add_to_inventory(warrior, std::move(bow));
 
         EXPECT_EQ(warrior->get_weapon_at(WeaponSlot::ranged), nullptr);
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
@@ -611,18 +609,18 @@ namespace DemoRPGUnitTests {
     TEST(RoleTest, StatCalculationsSingleBuff) {
         std::unique_ptr<Role> warrior = std::make_unique<Role>(std::unique_ptr<Character>{new Warrior{}});
         auto base_str = warrior->get_total_strength();
-        auto helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, BaseStat{ 5u,5u,5u,5u,5u });
-        auto sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, BaseStat{ 3u, 3u, 3u, 3u, 3u }, true, 10u, 20u);
-        Buff buff{ BaseStat{ 5u, 4u, 3u, 2u, 1u }, "Test Buff", false, 3 };
-        GameItemManager::add_to_inventory(warrior, helmet);
-        GameItemManager::add_to_inventory(warrior, sword);
+        auto helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, std::make_unique<BaseStat>(5u, 5u, 5u, 5u, 5u));
+        auto sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, std::make_unique<BaseStat>(3u, 3u, 3u, 3u, 3u), true, 10u, 20u);
+        std::unique_ptr<Buff> buff = std::make_unique<Buff>(std::make_unique<BaseStat>(5u, 4u, 3u, 2u, 1u), "Test Buff", false, 3);
+        GameItemManager::add_to_inventory(warrior, std::move(helmet));
+        GameItemManager::add_to_inventory(warrior, std::move(sword));
 
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
-        warrior->apply_buff(buff);
+        warrior->apply_buff(std::move(buff));
 
         EXPECT_EQ(warrior->get_m_buffs().size(), 1);
-        EXPECT_EQ(warrior->get_m_buffs().at(0).m_duration, 3);
+        EXPECT_EQ(warrior->get_m_buffs().at(0)->get_m_duration(), 3);
         EXPECT_EQ(warrior->get_total_strength(), 19u);
         EXPECT_EQ(warrior->get_total_intelligence(), 14u);
         EXPECT_EQ(warrior->get_total_agility(), 13u);
@@ -633,18 +631,18 @@ namespace DemoRPGUnitTests {
     TEST(RoleTest, StatCalculationsSingleDebuff) {
         std::unique_ptr<Role> warrior = std::make_unique<Role>(std::unique_ptr<Character>{new Warrior{}});
         auto base_str = warrior->get_total_strength();
-        auto helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, BaseStat{ 5u,5u,5u,5u,5u });
-        auto sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, BaseStat{ 3u, 3u, 3u, 3u, 3u }, true, 10u, 20u);
-        Buff debuff1{ BaseStat{ 10u, 10u, 10u, 10u, 10u }, "Debuff1", true, 3 };
-        GameItemManager::add_to_inventory(warrior, helmet);
-        GameItemManager::add_to_inventory(warrior, sword);
+        auto helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, std::make_unique<BaseStat>(5u, 5u, 5u, 5u, 5u));
+        auto sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, std::make_unique<BaseStat>(3u, 3u, 3u, 3u, 3u), true, 10u, 20u);
+        std::unique_ptr<Buff> debuff = std::make_unique<Buff>(std::make_unique<BaseStat>(10u, 10u, 10u, 10u, 10u), "Debuff", true, 3);
+        GameItemManager::add_to_inventory(warrior, std::move(helmet));
+        GameItemManager::add_to_inventory(warrior, std::move(sword));
 
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
-        warrior->apply_buff(debuff1);
+        warrior->apply_buff(std::move(debuff));
 
         EXPECT_EQ(warrior->get_m_buffs().size(), 1);
-        EXPECT_EQ(warrior->get_m_buffs().at(0).m_duration, 3);
+        EXPECT_EQ(warrior->get_m_buffs().at(0)->get_m_duration(), 3);
         EXPECT_EQ(warrior->get_total_strength(), 4u);
         EXPECT_EQ(warrior->get_total_intelligence(), 0u);
         EXPECT_EQ(warrior->get_total_agility(), 0u);
@@ -655,31 +653,31 @@ namespace DemoRPGUnitTests {
     TEST(RoleTest, StatCalculationsMultipleBuffs) {
         std::unique_ptr<Role> warrior = std::make_unique<Role>(std::unique_ptr<Character>{new Warrior{}});
         auto base_str = warrior->get_total_strength();
-        auto helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, BaseStat{ 5u,5u,5u,5u,5u });
-        auto sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, BaseStat{ 3u, 3u, 3u, 3u, 3u }, true, 10u, 20u);
-        Buff buff1{ BaseStat{ 5u, 4u, 3u, 2u, 1u }, "Buff1", false, 3 };
-        Buff buff2{ BaseStat{ 2u, 2u, 2u, 2u, 2u }, "Buff2", false, 3 };
-        GameItemManager::add_to_inventory(warrior, helmet);
-        GameItemManager::add_to_inventory(warrior, sword);
+        auto helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, std::make_unique<BaseStat>(5u, 5u, 5u, 5u, 5u));
+        auto sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, std::make_unique<BaseStat>(3u, 3u, 3u, 3u, 3u), true, 10u, 20u);
+        std::unique_ptr<Buff> buff1 = std::make_unique<Buff>(std::make_unique<BaseStat>(5u, 4u, 3u, 2u, 1u), "Buff1", false, 3);
+        std::unique_ptr<Buff> buff2 = std::make_unique<Buff>(std::make_unique<BaseStat>(2u, 2u, 2u, 2u, 2u), "Buff2", false, 3);
+        GameItemManager::add_to_inventory(warrior, std::move(helmet));
+        GameItemManager::add_to_inventory(warrior, std::move(sword));
 
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
-        warrior->apply_buff(buff1);
-        warrior->apply_buff(buff2);
+        warrior->apply_buff(std::move(buff1));
+        warrior->apply_buff(std::move(buff2));
 
         EXPECT_EQ(warrior->get_m_buffs().size(), 2);
-        EXPECT_EQ(warrior->get_m_buffs().at(0).m_duration, 3);
+        EXPECT_EQ(warrior->get_m_buffs().at(0)->get_m_duration(), 3);
         EXPECT_EQ(warrior->get_total_strength(), 21u);
         EXPECT_EQ(warrior->get_total_intelligence(), 16u);
         EXPECT_EQ(warrior->get_total_agility(), 15u);
         EXPECT_EQ(warrior->get_total_physical_defense(), 12u);
         EXPECT_EQ(warrior->get_total_magic_resistance(), 11u);
 
-        Buff duplicate_buff1{ BaseStat{ 5u, 4u, 3u, 2u, 1u }, "Buff1", false, 5 };
-        warrior->apply_buff(duplicate_buff1);
+        std::unique_ptr<Buff> duplicate_buff1 = std::make_unique<Buff>(std::make_unique<BaseStat>(5u, 4u, 3u, 2u, 1u), "Buff1", false, 5);
+        warrior->apply_buff(std::move(duplicate_buff1));
 
         EXPECT_EQ(warrior->get_m_buffs().size(), 2);
-        EXPECT_EQ(warrior->get_m_buffs().at(0).m_duration, 5);
+        EXPECT_EQ(warrior->get_m_buffs().at(0)->get_m_duration(), 5);
         EXPECT_EQ(warrior->get_total_strength(), 21u);
         EXPECT_EQ(warrior->get_total_intelligence(), 16u);
         EXPECT_EQ(warrior->get_total_agility(), 15u);
@@ -690,31 +688,31 @@ namespace DemoRPGUnitTests {
     TEST(RoleTest, StatCalculationsMultipleDebuffs) {
         std::unique_ptr<Role> warrior = std::make_unique<Role>(std::unique_ptr<Character>{new Warrior{}});
         auto base_str = warrior->get_total_strength();
-        auto helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, BaseStat{ 5u,5u,5u,5u,5u });
-        auto sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, BaseStat{ 3u, 3u, 3u, 3u, 3u }, true, 10u, 20u);
-        Buff debuff1{ BaseStat{ 5u, 4u, 3u, 2u, 1u }, "Debuff1", true, 3 };
-        Buff debuff2{ BaseStat{ 8u, 8u, 8u, 8u, 8u }, "Debuff2", true, 3 };
-        GameItemManager::add_to_inventory(warrior, helmet);
-        GameItemManager::add_to_inventory(warrior, sword);
+        auto helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, std::make_unique<BaseStat>(5u, 5u, 5u, 5u, 5u));
+        auto sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, std::make_unique<BaseStat>(3u, 3u, 3u, 3u, 3u), true, 10u, 20u);
+        std::unique_ptr<Buff> debuff1 = std::make_unique<Buff>(std::make_unique<BaseStat>(5u, 4u, 3u, 2u, 1u), "Debuff1", true, 3);
+        std::unique_ptr<Buff> debuff2 = std::make_unique<Buff>(std::make_unique<BaseStat>(8u, 8u, 8u, 8u, 8u), "Debuff2", true, 3);
+        GameItemManager::add_to_inventory(warrior, std::move(helmet));
+        GameItemManager::add_to_inventory(warrior, std::move(sword));
 
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
-        warrior->apply_buff(debuff1);
-        warrior->apply_buff(debuff2);
+        warrior->apply_buff(std::move(debuff1));
+        warrior->apply_buff(std::move(debuff2));
 
         EXPECT_EQ(warrior->get_m_buffs().size(), 2);
-        EXPECT_EQ(warrior->get_m_buffs().at(0).m_duration, 3);
+        EXPECT_EQ(warrior->get_m_buffs().at(0)->get_m_duration(), 3);
         EXPECT_EQ(warrior->get_total_strength(), 1u);
         EXPECT_EQ(warrior->get_total_intelligence(), 0u);
         EXPECT_EQ(warrior->get_total_agility(), 0u);
         EXPECT_EQ(warrior->get_total_physical_defense(), 0u);
         EXPECT_EQ(warrior->get_total_magic_resistance(), 0u);
 
-        Buff duplicate_debuff1{ BaseStat{ 5u, 4u, 3u, 2u, 1u }, "Debuff1", true, 5 };
-        warrior->apply_buff(duplicate_debuff1);
+        std::unique_ptr<Buff> duplicate_debuff1 = std::make_unique<Buff>(std::make_unique<BaseStat>(5u, 4u, 3u, 2u, 1u), "Debuff1", true, 5);
+        warrior->apply_buff(std::move(duplicate_debuff1));
 
         EXPECT_EQ(warrior->get_m_buffs().size(), 2);
-        EXPECT_EQ(warrior->get_m_buffs().at(0).m_duration, 5);
+        EXPECT_EQ(warrior->get_m_buffs().at(0)->get_m_duration(), 5);
         EXPECT_EQ(warrior->get_total_strength(), 1u);
         EXPECT_EQ(warrior->get_total_intelligence(), 0u);
         EXPECT_EQ(warrior->get_total_agility(), 0u);
@@ -746,10 +744,10 @@ namespace DemoRPGUnitTests {
     // The following tests are for the battle between a warrior and a monster.
     TEST(BattleTest, LevelOneWarriorVsMonster) {
         std::unique_ptr<Role> warrior = std::make_unique<Role>(std::unique_ptr<Character>{new Warrior{}});
-        auto helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, BaseStat{ 5u,5u,5u,5u,5u });
-        auto sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, BaseStat{ 3u, 3u, 3u, 3u, 3u }, true, 2u, 4u);
-        GameItemManager::add_to_inventory(warrior, helmet);
-        GameItemManager::add_to_inventory(warrior, sword);
+        auto helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, std::make_unique<BaseStat>(5u, 5u, 5u, 5u, 5u));
+        auto sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, std::make_unique<BaseStat>(3u, 3u, 3u, 3u, 3u), true, 2u, 4u);
+        GameItemManager::add_to_inventory(warrior, std::move(helmet));
+        GameItemManager::add_to_inventory(warrior, std::move(sword));
 
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));
@@ -766,10 +764,10 @@ namespace DemoRPGUnitTests {
 
     TEST(BattleTest, LevelThreeWarriorVsMonster) {
         std::unique_ptr<Role> warrior = std::make_unique<Role>(std::unique_ptr<Character>{new Warrior{}});
-        auto helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, BaseStat{ 5u,5u,5u,5u,5u });
-        auto sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, BaseStat{ 3u, 3u, 3u, 3u, 3u }, true, 2u, 4u);
-        GameItemManager::add_to_inventory(warrior, helmet);
-        GameItemManager::add_to_inventory(warrior, sword);
+        auto helmet = GameItemManager::generate_item("Helmet", ArmorSlot::head, std::make_unique<BaseStat>(5u, 5u, 5u, 5u, 5u));
+        auto sword = GameItemManager::generate_item("Sword", WeaponSlot::melee, std::make_unique<BaseStat>(3u, 3u, 3u, 3u, 3u), true, 2u, 4u);
+        GameItemManager::add_to_inventory(warrior, std::move(helmet));
+        GameItemManager::add_to_inventory(warrior, std::move(sword));
         warrior->get_m_character_ptr()->gain_experience(300u);
 
         ASSERT_TRUE(GameItemManager::use_or_equip_item(warrior, 0));

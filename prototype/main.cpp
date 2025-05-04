@@ -44,9 +44,7 @@ int main()
 	std::cout << "\nPlease enter your character's name: \n";
 	std::cin >> name_input;
 
-	
-	std::unique_ptr<Role> m_role_ptr = std::make_unique<Role>(character);
-	std::unique_ptr<Player> player = std::make_unique<Player>(m_role_ptr, name_input);
+	std::unique_ptr<Player> player = std::make_unique<Player>(std::make_unique<Role>(character), name_input);
 
 	create_enemy(enemy, player);
 	move_player_on_map(player, enemy);
@@ -63,19 +61,19 @@ int main()
 		{
 		case 'w':
 		case 'W':
-			player->m_x_position--;
+			player->set_m_x_position(player->get_m_x_position() - 1);
 			break;
 		case 's':
 		case 'S':
-			player->m_x_position++;
+			player->set_m_x_position(player->get_m_x_position() + 1);
 			break;
 		case 'a':
 		case 'A':
-			player->m_y_position--;
+			player->set_m_y_position(player->get_m_y_position() - 1);
 			break;
 		case 'd':
 		case 'D':
-			player->m_y_position++;
+			player->set_m_y_position(player->get_m_y_position() + 1);
 			break;
 		case 'i':
 		case 'I':

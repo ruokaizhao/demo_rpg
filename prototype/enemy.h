@@ -12,6 +12,27 @@ public:
 		return m_monster_ptr->get_hit_point()->get_current_point() > 0;
 	}
 
+	const std::unique_ptr<Monster>& get_monster_ptr() const
+	{
+		return m_monster_ptr;
+	}
+
+	const int get_x_position() const
+	{
+		return m_x_position;
+	}
+
+	const int get_y_position() const
+	{
+		return m_y_position;
+	}
+
+	const ExperienceType get_experience() const
+	{
+		return m_experience;
+	}
+
+private:
 	std::unique_ptr<Monster> m_monster_ptr;
 	int m_x_position{};
 	int m_y_position{};

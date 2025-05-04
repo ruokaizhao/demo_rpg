@@ -5,9 +5,16 @@ class GameItemManager
 {
 public:
 	// Armor
-	static std::unique_ptr<GameItem> generate_item(std::string name_value, ArmorSlot slot_value, BaseStat stat_value)
+	// std::unique_ptr<BaseStat>& can't take rvalue, unless we use const std::unique_ptr<BaseStat>&, but this way we can't modify the stat_value_ptr,
+	// if we don't pass in rvalue (by using std::move or std::make_unique), it's not clear to the caller that the ownership will be transferred, which is not ideal.
+	// So we can use std::unique_ptr<BaseStat>&& to explicit ask for rvalue, but it's not ideal since what the function gets is a reference to the rvalue, not the rvalue itself,
+	// so if we forget to move the value again inside the function, the ownership is never transferred, even though the caller thought it was (std::move).
+	// So std::unique_ptr<BaseStat> is ideal, although it is passed by value, but since std::unique_ptr is not copyable, the caller must call the function with std::move,
+	// now the function takes ownership of the value, even if we forget to move the value inside the function, it just results in early cleanup ¡ª not dangling pointers or bugs,
+	// the move happened as expected.
+	static std::unique_ptr<GameItem> generate_item(std::string name_value, ArmorSlot slot_value, std::unique_ptr<BaseStat> stat_value_ptr)
 	{
-		std::unique_ptr<GameItem> item_ptr = std::unique_ptr<GameItem>{ new GameItem{ std::shared_ptr<Item>{ new Armor{ name_value, slot_value, stat_value } } } };
+		std::unique_ptr<GameItem> item_ptr = std::unique_ptr<GameItem>{ new GameItem{ std::shared_ptr<Item>{ new Armor{ name_value, slot_value, stat_value_ptr } } } };
 
 		return item_ptr;
 	}
@@ -40,17 +47,17 @@ public:
 			// The base class has at least one virtual function (so RTTI is available).
 			// The object is really of the derived type
 			// You cannot use dynamic_pointer_cast to point to a subobject, member field, or an alias view (like you can with aliasing).
-			// return std::dynamic_pointer_cast<Armor>(item->get_m_item_ptr());
-			return std::shared_ptr<Armor>{item->get_m_item_ptr(), static_cast<Armor*>(item->get_m_item_ptr().get())};
+			return std::dynamic_pointer_cast<Armor>(item->get_m_item_ptr());
+			// return std::shared_ptr<Armor>{item->get_m_item_ptr(), static_cast<Armor*>(item->get_m_item_ptr().get())};
 		}
 
 		return nullptr;
 	}
 
 	// Weapon
-	static std::unique_ptr<GameItem> generate_item(std::string name_value, WeaponSlot slot_value, BaseStat stat_value, bool is_two_handed_value, DamageType min_damage_value, DamageType max_damage_value)
+	static std::unique_ptr<GameItem> generate_item(std::string name_value, WeaponSlot slot_value, std::unique_ptr<BaseStat> stat_value_ptr, bool is_two_handed_value, DamageType min_damage_value, DamageType max_damage_value)
 	{
-		std::unique_ptr<GameItem> item_ptr = std::unique_ptr<GameItem>{ new GameItem{ std::shared_ptr<Item>(new Weapon{name_value, slot_value, stat_value, is_two_handed_value, min_damage_value, max_damage_value}) } };
+		std::unique_ptr<GameItem> item_ptr = std::unique_ptr<GameItem>{ new GameItem{ std::shared_ptr<Item>(new Weapon{name_value, slot_value, stat_value_ptr, is_two_handed_value, min_damage_value, max_damage_value}) } };
 
 		return item_ptr;
 	}
@@ -151,7 +158,7 @@ public:
 				// spent some time and can't figure out why.
 				std::unique_ptr<GameItem> old_item = std::move(role->m_armors.at(slot));
 				role->m_armors.at(slot) = std::move(item);
-				add_to_inventory(role, old_item);
+				add_to_inventory(role, std::move(old_item));
 			}
 
 			cleanup_inventory(role);
@@ -171,8 +178,8 @@ public:
 			else
 			{
 				std::unique_ptr<GameItem> old_item = std::move(role->m_weapons.at(slot));
-				add_to_inventory(role, old_item);
 				role->m_weapons.at(slot) = std::move(item);
+				add_to_inventory(role, std::move(old_item));
 			}
 			// Objects pointed by equipment and armor are still needed, so we need to prevent them being deleted by the smart pointers by releasing the smart pointers.
 			// However, after using shared_ptr instead of unique_ptr, we don't need to release the smart pointers here.
@@ -189,7 +196,9 @@ public:
 
 			if (potion->get_buff() != nullptr)
 			{
-				role->apply_buff(*(potion->get_buff()));
+				std::unique_ptr<BaseStat> stat = std::make_unique<BaseStat>(potion->get_buff()->get_m_stat_ptr()->get_m_strength(), potion->get_buff()->get_m_stat_ptr()->get_m_intelligence(), potion->get_buff()->get_m_stat_ptr()->get_m_agility(), potion->get_buff()->get_m_stat_ptr()->get_m_physical_defense(), potion->get_buff()->get_m_stat_ptr()->get_m_magic_resistance());
+				std::unique_ptr<Buff> buff = std::make_unique<Buff>(std::move(stat), potion->get_buff()->get_m_name(), potion->get_buff()->get_m_is_debuff(), potion->get_buff()->get_m_duration());
+				role->apply_buff(std::move(buff));
 			}
 
 			// If the hit point is full and the potion does not have a buff, the potion will not be used.
@@ -219,7 +228,7 @@ public:
 		return false;
 	}
 
-	static bool add_to_inventory(std::unique_ptr<Role>& role, std::unique_ptr<GameItem>& item)
+	static bool add_to_inventory(std::unique_ptr<Role>& role, std::unique_ptr<GameItem> item)
 	{
 		if (item == nullptr || item->get_m_item_ptr() == nullptr)
 		{
@@ -231,8 +240,8 @@ public:
 		return true;
 	}
 
-	static void cleanup_inventory(std::unique_ptr<Role>& role)
+	static void cleanup_inventory(const std::unique_ptr<Role>& role)
 	{
-		role->m_inventory.erase(std::remove_if(role->m_inventory.begin(), role->m_inventory.end(), [](const std::unique_ptr<GameItem>& item) -> bool {return item == nullptr || item->is_marked_for_deletion(); }), role->m_inventory.end());
+		role->m_inventory.erase(std::remove_if(role->m_inventory.begin(), role->m_inventory.end(), [](const std::unique_ptr<GameItem>& item) -> bool {return item == nullptr || item->get_m_marked_for_deletion(); }), role->m_inventory.end());
 	}
 };

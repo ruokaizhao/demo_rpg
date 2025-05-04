@@ -13,7 +13,7 @@ public:
 		return m_item_ptr;
 	}
 
-	bool is_marked_for_deletion() const
+	const bool get_m_marked_for_deletion() const
 	{
 		return m_marked_for_deletion;
 	}
