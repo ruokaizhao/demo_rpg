@@ -148,6 +148,7 @@
     <ClInclude Include="enums.h" />
     <ClInclude Include="game_item.h" />
     <ClInclude Include="game_item_manager.h" />
+    <ClInclude Include="hunter.h" />
     <ClInclude Include="include_class.h" />
     <ClInclude Include="item.h" />
     <ClInclude Include="macro.h" />

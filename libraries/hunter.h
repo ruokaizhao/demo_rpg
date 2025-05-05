@@ -1,7 +1,7 @@
 #pragma once
 #include "character.h"
 
-class Rogue : public Character
+class Hunter : public Character
 {
 public:
 	static constexpr PointPoolType BASE_HIT_POINT = static_cast<PointPoolType>(12u);
@@ -10,14 +10,14 @@ public:
 	static constexpr StatType BASE_INTELLIGENCE = static_cast<StatType>(3u);
 	static constexpr StatType BASE_AGILITY = static_cast<StatType>(5u);
 
-	Rogue() : Character{}
+	Hunter() : Character{}
 	{
 		SET_UP_CHARACTER;
 	}
 
 	std::string get_class_name() const override
 	{
-		return std::string{ "Rogue" };
+		return std::string{ "Hunter" };
 	}
 
 private:
@@ -27,7 +27,7 @@ private:
 
 		if (get_current_level() == 2)
 		{
-			get_abilities().emplace_back(std::make_unique<Ability>("Sneak Attack", 0u, 3u, 4u, AbilityTarget::enemy, AbilityScalar::agility));
+			get_abilities().emplace_back(std::make_unique<Ability>("Power Shot", 0u, 3u, 4u, AbilityTarget::enemy, AbilityScalar::agility));
 		}
 	}
 };

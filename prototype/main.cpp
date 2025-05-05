@@ -6,33 +6,33 @@ int main()
 	std::unique_ptr<Character> character = nullptr;
 	
 	std::cout << " Please select your class:\n\n";
-	std::cout << " A: Warrior\n";
-	std::cout << " B: Rogue\n";
-	std::cout << " C: Wizard\n";
-	std::cout << " D: Cleric\n";
+	std::cout << " 1: Cleric\n";
+	std::cout << " 2: Hunter\n";
+	std::cout << " 3: Rogue\n";
+	std::cout << " 4: Warrior\n";
+	std::cout << " 5: Wizard\n";
 
-	char selection{};
+	int selection{};
 	while (character == nullptr)
 	{	
 		std::cin >> selection;
 
 		switch (selection)
 		{
-		case 'a':
-		case 'A':
-			character = std::make_unique<Warrior>();
+		case 1:
+			character = std::make_unique<Cleric>();
 			break;
-		case 'b':
-		case 'B':
+		case 2:
+			character = std::make_unique<Hunter>();
+			break;
+		case 3:
 			character = std::make_unique<Rogue>();
 			break;
-		case 'c':
-		case 'C':
-			character = std::make_unique<Wizard>();
+		case 4:
+			character = std::make_unique<Warrior>();
 			break;
-		case 'd':
-		case 'D':
-			character = std::make_unique<Cleric>();
+		case 5:
+			character = std::make_unique<Wizard>();
 			break;
 		default:
 			std::cout << " Invalid input.\n";

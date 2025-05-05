@@ -100,6 +100,37 @@ namespace DemoRPGUnitTests {
         EXPECT_EQ(cleric.get_abilities()[1]->get_m_name(), "Smite");
     }
 
+    // Test case for Hunter class
+    TEST(HunterTest, Initialization) {
+        Hunter hunter;
+
+        EXPECT_EQ(hunter.get_class_name(), "Hunter");
+        EXPECT_EQ(hunter.get_current_level(), 1u);
+        EXPECT_EQ(hunter.get_current_experience(), 0u);
+        EXPECT_EQ(hunter.get_experience_till_next_level(), 100u);
+        EXPECT_EQ(hunter.get_hit_point()->get_max_point(), 12u);
+        EXPECT_EQ(hunter.get_hit_point()->get_current_point(), 12u);
+        EXPECT_EQ(hunter.get_base_strength(), 3u);
+        EXPECT_EQ(hunter.get_base_intelligence(), 3u);
+        EXPECT_EQ(hunter.get_base_agility(), 5u);
+    }
+
+    TEST(HunterTest, LevelUp) {
+        Hunter hunter;
+        hunter.gain_experience(100u);
+
+        EXPECT_EQ(hunter.get_current_level(), 2u);
+        EXPECT_EQ(hunter.get_current_experience(), 0u);
+        EXPECT_EQ(hunter.get_experience_till_next_level(), 200u);
+        EXPECT_EQ(hunter.get_hit_point()->get_max_point(), 18u);
+        EXPECT_EQ(hunter.get_hit_point()->get_current_point(), 18u);
+        EXPECT_EQ(hunter.get_base_strength(), 5u);
+        EXPECT_EQ(hunter.get_base_intelligence(), 5u);
+        EXPECT_EQ(hunter.get_base_agility(), 8u);
+        ASSERT_EQ(hunter.get_abilities().size(), 1u);
+        EXPECT_EQ(hunter.get_abilities()[0]->get_m_name(), "Power Shot");
+    }
+
     // Test case for Rogue class
     TEST(RogueTest, Initialization) {
         Rogue rogue;
@@ -127,6 +158,8 @@ namespace DemoRPGUnitTests {
         EXPECT_EQ(rogue.get_base_strength(), 5u);
         EXPECT_EQ(rogue.get_base_intelligence(), 5u);
         EXPECT_EQ(rogue.get_base_agility(), 8u);
+        ASSERT_EQ(rogue.get_abilities().size(), 1u);
+        EXPECT_EQ(rogue.get_abilities()[0]->get_m_name(), "Sneak Attack");
     }
 
     // Test case for Warrior class
