@@ -16,7 +16,7 @@ public:
 
 		SET_UP_CHARACTER;
 
-		get_abilities().emplace_back(std::make_unique<Ability>("Heal", 2u, 1u, 2u, AbilityTarget::ally, AbilityScalar::intelligence));
+		get_abilities().emplace_back(std::make_unique<Ability>("Heal", 2u, 3u, 5u, AbilityTarget::ally, AbilityScalar::intelligence));
 	}
 
 	std::string get_class_name() const override
@@ -31,7 +31,7 @@ private:
 
 		if (get_current_level() == 2)
 		{
-			get_abilities().emplace_back(std::make_unique<Ability>("Smite", 2u, 1u, 2u, AbilityTarget::enemy, AbilityScalar::intelligence));
+			get_abilities().emplace_back(std::make_unique<Ability>("Smite", 2u, 3u, 3u, AbilityTarget::enemy, AbilityScalar::intelligence));
 		}
 	}
 };

@@ -8,7 +8,7 @@ class Role
 {
 	friend class GameItemManager;
 public:
-	Role(std::unique_ptr<Character>& character_ptr_value) : m_character_ptr{ std::move(character_ptr_value) }, m_stat_from_buffs_ptr{ std::make_unique<BaseStat>() } {}
+	Role(std::unique_ptr<Character> character_ptr_value) : m_character_ptr{ std::move(character_ptr_value) }, m_stat_from_buffs_ptr{ std::make_unique<BaseStat>() } {}
 
 	~Role() = default;
 
@@ -156,29 +156,40 @@ public:
 	{
 		DamageType total_melee_damage = 0u;
 
-
-		if (get_weapon_at(WeaponSlot::melee) != nullptr && get_weapon_at(WeaponSlot::melee)->get_m_item_ptr() != nullptr)
+		if (m_weapons.at(static_cast<size_t>(WeaponSlot::melee)) != nullptr && m_weapons.at(static_cast<size_t>(WeaponSlot::melee))->get_m_item_ptr() != nullptr)
 		{
-			auto equipment = std::shared_ptr<Weapon>{ get_weapon_at(WeaponSlot::melee)->get_m_item_ptr(), static_cast<Weapon*>(get_weapon_at(WeaponSlot::melee)->get_m_item_ptr().get()) };
+			auto equipment = std::shared_ptr<Weapon>{ m_weapons.at(static_cast<size_t>(WeaponSlot::melee))->get_m_item_ptr(), static_cast<Weapon*>(m_weapons.at(static_cast<size_t>(WeaponSlot::melee))->get_m_item_ptr().get()) };
 
 			total_melee_damage += Random::random(equipment->get_min_damage(), equipment->get_max_damage());
 		}
 
-		return total_melee_damage += (get_total_strength() / 2u);
+		// Rogue melee damage scales with agility instead of strength.
+		if (typeid(*m_character_ptr) == typeid(Rogue))
+		{
+			total_melee_damage += (get_total_agility() / 2u);
+		}
+		else
+		{
+			total_melee_damage += (get_total_strength() / 2u);
+		}
+
+		return total_melee_damage;
 	}
 
 	const DamageType get_ranged_damage() const
 	{
 		DamageType total_ranged_damage = 0u;
 
-		if (get_weapon_at(WeaponSlot::ranged) != nullptr && get_weapon_at(WeaponSlot::ranged)->get_m_item_ptr() != nullptr)
+		if (m_weapons.at(static_cast<size_t>(WeaponSlot::ranged)) != nullptr && m_weapons.at(static_cast<size_t>(WeaponSlot::ranged))->get_m_item_ptr() != nullptr)
 		{
-			auto equipment = std::shared_ptr<Weapon>{ get_weapon_at(WeaponSlot::ranged)->get_m_item_ptr(), static_cast<Weapon*>(get_weapon_at(WeaponSlot::ranged)->get_m_item_ptr().get()) };
+			auto equipment = std::shared_ptr<Weapon>{ m_weapons.at(static_cast<size_t>(WeaponSlot::ranged))->get_m_item_ptr(), static_cast<Weapon*>(m_weapons.at(static_cast<size_t>(WeaponSlot::ranged))->get_m_item_ptr().get()) };
 
 			total_ranged_damage += Random::random(equipment->get_min_damage(), equipment->get_max_damage());
 		}
 
-		return total_ranged_damage += (get_total_agility() / 2u);
+		total_ranged_damage += (get_total_agility() / 2u);
+
+		return total_ranged_damage;
 	}
 
 	std::vector<std::unique_ptr<GameItem>>& get_inventory()
@@ -194,16 +205,6 @@ public:
 	const std::array<std::unique_ptr<GameItem>, static_cast<size_t>(WeaponSlot::number_of_slots)>& get_weapons() const
 	{
 		return m_weapons;
-	}
-
-	const std::unique_ptr<GameItem>& get_armor_at(ArmorSlot slot) const
-	{
-		return m_armors.at(static_cast<size_t>(slot));
-	}
-
-	const std::unique_ptr<GameItem>& get_weapon_at(WeaponSlot slot) const
-	{
-		return m_weapons.at(static_cast<size_t>(slot));
 	}
 
 	const std::vector<std::unique_ptr<Buff>>& get_m_buffs() const

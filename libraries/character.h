@@ -3,7 +3,6 @@
 #include "ability.h"
 #include "game_item.h"
 #include "point_pool.h"
-#include "base_stat.h"
 #include <vector>
 
 class Character
@@ -80,9 +79,7 @@ public:
 	{
 		m_current_experience += experience_value;
 
-		while (check_if_leveled())
-		{
-		}
+		while (check_if_leveled()) {}
 	}
 
 	virtual ~Character() = default;

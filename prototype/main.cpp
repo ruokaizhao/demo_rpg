@@ -44,13 +44,13 @@ int main()
 	std::cout << "\nPlease enter your character's name: \n";
 	std::cin >> name_input;
 
-	std::unique_ptr<Player> player = std::make_unique<Player>(std::make_unique<Role>(character), name_input);
+	std::unique_ptr<Player> player = std::make_unique<Player>(std::make_unique<Role>(std::move(character)), name_input);
 
 	create_enemy(enemy, player);
 	move_player_on_map(player, enemy);
 	show_map();
 
-	std::cout << "\nMove with (wasd), (i) to see inventory, and (c) to see character sheet.\n";
+	std::cout << "\nMove with (wasd), (i) to show inventory, and (c) to show character sheet.\n";
 
 	char direction{};
 	while (player->is_alive())
@@ -90,7 +90,7 @@ int main()
 	move_player_on_map(player, enemy);
 	show_map();
 
-	std::cout << "\nMove with (wasd), (i) to see inventory, and (c) to see character sheet.\n";
+	std::cout << "\nMove with (wasd), (i) to show inventory, and (c) to show character sheet.\n";
 	}
 
 	return 0;

@@ -34,6 +34,11 @@ public:
 		return m_cooldown;
 	}
 
+	const AbilityType get_m_round_until_available() const
+	{
+		return m_round_until_available;
+	}
+
 	const AbilityType get_m_hit_point_effect() const
 	{
 		return m_hit_point_effect;
@@ -49,11 +54,17 @@ public:
 		return m_scalar;
 	}
 
+	void set_m_time_until_available(AbilityType time_value)
+	{
+		m_round_until_available = time_value;
+	}
+
 private:
-	std::string m_name;
-	AbilityType m_cost;
-	AbilityType m_cooldown;
-	AbilityType m_hit_point_effect;
-	AbilityTarget m_target;
-	AbilityScalar m_scalar;
+	std::string m_name{};
+	AbilityType m_cost{};
+	AbilityType m_cooldown{};
+	AbilityType m_round_until_available{};
+	AbilityType m_hit_point_effect{};
+	AbilityTarget m_target{};
+	AbilityScalar m_scalar{};
 };
