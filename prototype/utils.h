@@ -142,8 +142,20 @@ bool show_inventory(std::unique_ptr<Player>& player, bool during_battle)
 			case 'u':
 			case 'U':
 			{
+				if (inventory.empty())
+				{
+					break;
+				}
+
+				bool is_last_item = selection == inventory.size() - 1 ? true : false;
 				bool is_potion = GameItemManager::is_item_potion(inventory.at(selection));
 				round_used = GameItemManager::use_or_equip_item(player->get_m_role_ptr(), selection);
+
+				if (is_last_item && round_used)
+				{
+					selection = selection < 1 ? 0 : --selection;
+				}
+
 				if (is_potion && !round_used)
 				{
 					std::cout << "You are already at full health.\n\n";
