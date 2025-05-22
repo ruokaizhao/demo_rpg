@@ -153,7 +153,7 @@ bool show_inventory(std::unique_ptr<Player>& player, bool during_battle)
 
 				if (is_last_item && round_used)
 				{
-					selection = selection < 1 ? 0 : --selection;
+					selection = selection < 1 ? 0 : inventory.size() - 1;
 				}
 
 				if (is_potion && !round_used)
