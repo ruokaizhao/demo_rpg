@@ -1,22 +1,22 @@
 #pragma once
 #include <cstdint>
 
-typedef std::uint16_t AbilityType;
+using AbilityType = std::uint16_t ;
 
-typedef std::uint16_t BuffDurationType;
+using BuffDurationType = std::uint16_t;
 
-typedef std::uint16_t BuffType;
+using BuffType = std::uint16_t;
 
-typedef std::uint16_t LevelType;
+using LevelType = std::uint16_t;
 
-typedef std::uint64_t ExperienceType;
+using ExperienceType = std::uint64_t;
 
-typedef std::uint64_t PointPoolType;
+using PointPoolType = std::uint64_t;
 
-typedef std::int16_t StatType;
+using StatType = std::int16_t;
 
-typedef std::uint64_t DamageType;
+using DamageType = std::uint64_t;
 
-typedef std::uint16_t IdType;
+using IdType = std::uint16_t;
 
-typedef std::uint16_t ItemCountType;
+using ItemCountType = std::uint16_t;
